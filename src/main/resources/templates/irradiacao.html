@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Irradiação</title>
+</head>
+<body>
+<h2>Irradiação</h2>
+<form action="#" method="post">
+  <fieldset>
+    <legend>Ponto 1</legend>
+    <label for="pv1">PV:</label>
+    <input type="text" id="pv1" name="pontos[0][pv]" required><br><br>
+
+    <label for="dist1">Distância:</label>
+    <input type="number" step="0.01" id="dist1" name="pontos[0][dist]" required><br><br>
+
+    <label>Ângulo:</label>
+    <input type="number" name="pontos[0][ang_graus]" required>°
+    <input type="number" name="pontos[0][ang_min]" required>"
+    <input type="number" name="pontos[0][ang_seg]" required>'<br><br>
+
+    <label>Azimute:</label>
+    <input type="number" name="pontos[0][az_graus]" required>°
+    <input type="number" name="pontos[0][az_min]" required>"
+    <input type="number" name="pontos[0][az_seg]" required>'
+  </fieldset>
+  <br>
+
+  <!-- Ponto 2 -->
+  <fieldset>
+    <legend>Ponto 2</legend>
+    <label for="pv2">PV:</label>
+    <input type="text" id="pv2" name="pontos[1][pv]" required><br><br>
+
+    <label for="dist2">Distância:</label>
+    <input type="number" step="0.01" id="dist2" name="pontos[1][dist]" required><br><br>
+
+    <label>Ângulo:</label>
+    <input type="number" name="pontos[1][ang_graus]" required>°
+    <input type="number" name="pontos[1][ang_min]" required>"
+    <input type="number" name="pontos[1][ang_seg]" required>'<br><br>
+  </fieldset>
+  <br>
+
+  <!-- Ponto 3 -->
+  <fieldset>
+    <legend>Ponto 3</legend>
+
+    <label for="pv3">PV:</label>
+    <input type="text" id="pv3" name="pontos[2][pv]" required><br><br>
+
+    <label for="dist3">Distância:</label>
+    <input type="number" step="0.01" id="dist3" name="pontos[2][dist]" required><br><br>
+
+    <label>Ângulo:</label>
+    <input type="number" name="pontos[2][ang_graus]" required>°
+    <input type="number" name="pontos[2][ang_min]" required>"
+    <input type="number" name="pontos[2][ang_seg]" required>'<br><br>
+  </fieldset>
+  <br>
+
+  <!-- Ponto 4 -->
+  <fieldset>
+    <legend>Ponto 4</legend>
+
+    <label for="pv4">PV:</label>
+    <input type="text" id="pv4" name="pontos[3][pv]" required><br><br>
+
+    <label for="dist4">Distância:</label>
+    <input type="number" step="0.01" id="dist4" name="pontos[3][dist]" required><br><br>
+
+    <label>Ângulo:</label>
+    <input type="number" name="pontos[3][ang_graus]" required>°
+    <input type="number" name="pontos[3][ang_min]" required>"
+    <input type="number" name="pontos[3][ang_seg]" required>'<br><br>
+  </fieldset>
+  <br>
+
+  <!-- Ponto 5 -->
+  <fieldset>
+    <legend>Ponto 5</legend>
+
+    <label for="pv5">PV:</label>
+    <input type="text" id="pv5" name="pontos[4][pv]" required><br><br>
+
+    <label for="dist5">Distância:</label>
+    <input type="number" step="0.01" id="dist5" name="pontos[4][dist]" required><br><br>
+
+    <label>Ângulo:</label>
+    <input type="number" name="pontos[4][ang_graus]" required>°
+    <input type="number" name="pontos[4][ang_min]" required>"
+    <input type="number" name="pontos[4][ang_seg]" required>'<br><br>
+  </fieldset>
+  <br>
+
+  <button type="submit">Enviar</button>
+</form>
+</body>
+</html>

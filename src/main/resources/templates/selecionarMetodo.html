@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Selecionar Método</title>
+</head>
+<body>
+<h1>Selecionar método de Cálculo</h1>
+
+<form th:action="@{/irradiacao}" method="get">
+  <button type="submit">Irradiação</button>
+</form>
+
+<form th:action="@{/caminhamento}" method="get">
+  <button type="submit">Caminhamento</button>
+</form>
+
+<form th:action="@{/caminhamento-irradiado}" method="get">
+  <button type="submit">Caminhamento Irradiado</button>
+</form>
+</body>
+</html>

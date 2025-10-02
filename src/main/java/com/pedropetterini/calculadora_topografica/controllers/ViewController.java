@@ -5,8 +5,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ViewController {
-    @GetMapping("/cadastrar")
+    @GetMapping("/cadastrarUsuario")
     public String paginaCadastro(){
-        return "cadastrar";
+        return "cadastrarUsuario";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/selecionarMetodo")
+    public String selecionarMetodo(){
+        return "selecionarMetodo";
+    }
+
+    @GetMapping("/irradiacao")
+    public String irradiacao(){
+        return "irradiacao";
     }
 }

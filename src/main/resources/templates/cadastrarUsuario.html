@@ -10,7 +10,7 @@
 <body>
 <h1>Cadastro</h1>
 
-<form action="" method="post">
+<form th:action="@{/cadastrarUsuario}" method="post">
   <label for="nome">Nome:</label><br>
   <input type="text" name="nome" id="nome" required><br><br>
 
@@ -22,6 +22,11 @@
 
   <button type="submit">Cadastrar</button>
 </form>
+
+<form th:action="@{/login}" method="get">
+  <button type="submit">Voltar</button>
+</form>
+
 </body>
 
 </html>
