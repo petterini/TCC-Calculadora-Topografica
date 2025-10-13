@@ -1,0 +1,187 @@
+/* Variáveis de Cores - Se ainda não tiver */
+:root {
+    --primary-color: #1e3148;
+    --secondary-color: #16a637;
+    --text-color-light: #f4f4f4;
+    --text-color-dark: #333;
+    --link-hover-color: #1a8f30;
+    --background-color: #f8f9fa;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Layout da Página */
+.page-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color);
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem 1rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Título da Página */
+.page-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Grid de Botões */
+.menu-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.button-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.button-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Botões de Método */
+.method-button {
+    width: 100%;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.method-button:hover {
+    background: linear-gradient(135deg, var(--secondary-color), var(--link-hover-color));
+    transform: scale(1.05);
+}
+
+.method-button.logout {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.method-button.logout:hover {
+    background: linear-gradient(135deg, #c82333, #a71e2a);
+}
+
+.button-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.button-text {
+    font-size: 1.2rem;
+}
+
+.button-description {
+    margin-top: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1rem 0.5rem;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .menu-buttons {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .button-card {
+        padding: 1.25rem;
+    }
+
+    .method-button {
+        padding: 1.25rem;
+    }
+
+    .button-text {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 1.75rem;
+    }
+
+    .button-card {
+        padding: 1rem;
+    }
+
+    .method-button {
+        padding: 1rem;
+    }
+
+    .button-icon {
+        font-size: 1.75rem;
+    }
+
+    .button-text {
+        font-size: 1rem;
+    }
+}
+
+/* Estados de Foco para Acessibilidade */
+.method-button:focus {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+/* Animações de Entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.button-card {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.button-card:nth-child(1) { animation-delay: 0.1s; }
+.button-card:nth-child(2) { animation-delay: 0.2s; }
+.button-card:nth-child(3) { animation-delay: 0.3s; }
+.button-card:nth-child(4) { animation-delay: 0.4s; }

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/header.css">
+</head>
+<body>
+<header class="header" th:fragment="header">
+  <div class="header-content">
+    <!-- Menu Hamburger (Esquerda) -->
+    <button class="menu-toggle" id="menuToggle">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <!-- Logo e Título (Centro) -->
+    <div class="logo-section">
+      <a th:href="@{/}" class="logo-link">
+        <img src="/Logo.png" alt="Logo Calculadora Topográfica" class="logo">
+        <h1 class="app-title">Calculadora Topográfica</h1>
+      </a>
+    </div>
+
+    <!-- Ícone de Login (Direita) -->
+    <div class="login-section">
+      <button class="login-toggle" id="loginToggle">
+        <svg class="login-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu Lateral -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2 class="sidebar-title">Menu</h2>
+      <button class="close-menu" id="closeMenu">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" fill="none">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="sidebar-nav">
+      <ul class="sidebar-list">
+        <li class="sidebar-item">
+          <a th:href="@{/irradiacao}" class="sidebar-link">
+            <span class="nav-icon">📡</span>
+            Irradiação
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/caminhamento}" class="sidebar-link">
+            <span class="nav-icon">🧭</span>
+            Caminhamento
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/caminhamento-irradiado}" class="sidebar-link">
+            <span class="nav-icon">🚀</span>
+            Caminhamento Irradiado
+          </a>
+        </li>
+        <li class="sidebar-item">
+          <a th:href="@{/}" class="sidebar-link">
+            <span class="nav-icon">🏠</span>
+            Menu Inicial
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Menu de Login -->
+  <div class="login-menu" id="loginMenu">
+    <div class="login-menu-content">
+      <h3>Usuário</h3>
+      <div class="user-info" th:if="${#authentication != null && #authentication.isAuthenticated()}">
+        <p th:text="${#authentication.name}">Nome do usuário</p>
+        <form th:action="@{/logout}" method="post">
+          <button type="submit" class="logout-btn">Sair</button>
+        </form>
+      </div>
+      <div class="user-info" th:unless="${#authentication != null && #authentication.isAuthenticated()}">
+        <a th:href="@{/login}" class="login-btn">Fazer Login</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/header.js"></script>
+</header>
+</body>
+</html>
