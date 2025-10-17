@@ -121,11 +121,10 @@
     stroke: currentColor;
 }
 
-/* Sidebar */
 .sidebar {
     position: fixed;
     top: 0;
-    left: -320px;
+    left: -100%;
     width: 300px;
     height: 100vh;
     background: var(--sidebar-bg);
@@ -283,9 +282,39 @@
 }
 
 /* Responsividade */
+@media (max-width: 480px) {
+    .sidebar {
+        width: 85%;
+        max-width: 280px;
+        left: -100%;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .sidebar-header {
+        padding: 1rem 0;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-nav {
+        padding: 0;
+    }
+
+    .sidebar-link {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+}
+
 @media (max-width: 768px) {
+    .sidebar {
+        width: 320px;
+    }
+
     .header-content {
-        padding: 0 1rem;
+        padding: 0.5rem 1rem;
     }
 
     .app-title {
@@ -293,35 +322,7 @@
     }
 
     .logo {
-        height: 32px;
-        width: 32px;
-    }
-
-    .sidebar {
-        width: 280px;
-    }
-
-    .login-menu {
-        right: 0.5rem;
-        min-width: 180px;
-    }
-}
-
-@media (max-width: 480px) {
-    .header {
-        padding: 0.75rem;
-    }
-
-    .app-title {
-        font-size: 0.9rem;
-    }
-
-    .logo-link {
-        gap: 8px;
-    }
-
-    .sidebar {
-        width: 100%;
-        left: -100%;
+        height: 35px;
+        width: 35px;
     }
 }

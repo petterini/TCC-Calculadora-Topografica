@@ -1,4 +1,4 @@
-// Configuração do menu mobile
+// header.js
 document.addEventListener('DOMContentLoaded', function() {
     const menuToggle = document.getElementById('menuToggle');
     const closeMenu = document.getElementById('closeMenu');
@@ -24,7 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
     closeMenu.addEventListener('click', closeSidebar);
     overlay.addEventListener('click', closeSidebar);
 
-    // Toggle menu de login
+    // Fechar menu ao clicar em links (melhor para mobile)
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+
+    // Menu de login
     loginToggle.addEventListener('click', function(e) {
         e.stopPropagation();
         loginMenu.classList.toggle('active');
@@ -37,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Fechar menu ao pressionar ESC
+    // Fechar tudo ao pressionar ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeSidebar();
@@ -45,10 +51,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Fechar menu ao redimensionar a janela (para desktop)
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 768) {
-            closeSidebar();
-        }
-    });
+    // Prevenir problemas de scroll em mobile
+    sidebar.addEventListener('touchmove', function(e) {
+        e.stopPropagation();
+    }, { passive: false });
+
+    overlay.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    }, { passive: false });
 });

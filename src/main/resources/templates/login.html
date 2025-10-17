@@ -4,10 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
   <title>Login</title>
 </head>
 
 <body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
 <h1>Login</h1>
 
 <form th:action="@{/entrar}" method="post">
@@ -20,6 +25,13 @@
   <button type="submit">Login</button>
   <p>Ainda não possui conta? <a href="cadastrarUsuario">Cadastre-se</a></p>
 </form>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!-- Scripts -->
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+
 </body>
 
 </html>
