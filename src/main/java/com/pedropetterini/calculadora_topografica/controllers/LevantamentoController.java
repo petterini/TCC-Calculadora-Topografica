@@ -17,8 +17,9 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/levantamentos")
 public class LevantamentoController {
-    private LevantamentoService levantamentoService;
+    private final LevantamentoService levantamentoService;
 
     @PostMapping("/cadastrarLevantamento")
     public ResponseEntity<Object> cadastrarLevantamento(Levantamento levantamento) {

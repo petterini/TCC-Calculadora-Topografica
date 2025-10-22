@@ -1,5 +1,6 @@
 package com.pedropetterini.calculadora_topografica.models;
 
+import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,8 +17,10 @@ public class Ponto {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotBlank
-    private UUID id_levantamento;
+    @ManyToOne
+    @JoinColumn(name = "id_levantamento", nullable = false)
+    @NotNull
+    private Levantamento levantamento;
 
     @NotNull
     private double angulo;
