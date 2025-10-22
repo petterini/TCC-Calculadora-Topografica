@@ -6,6 +6,7 @@ import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepos
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -13,8 +14,8 @@ public class LevantamentoService {
 
     private final LevantamentoRepository levantamentoRepository;
 
-    public void cadastrar(Levantamento levantamento) {
-        levantamentoRepository.save(levantamento);
+    public Levantamento cadastrar(Levantamento levantamento) {
+        return levantamentoRepository.save(levantamento);
     }
 
     public Levantamento getLevantamentoById(UUID id) {
@@ -24,4 +25,26 @@ public class LevantamentoService {
             throw new LevantamentoNotFoundException("Levantamento não encontrado");
         }
     }
+
+    public List<Levantamento> getLevantamentoByUser(UUID id) {
+        List<Levantamento> levantamentos = levantamentoRepository.getLevantamentoByIdUsuario(id);
+
+        if(levantamentos.isEmpty()){
+            throw new LevantamentoNotFoundException("Nenhum levantamento encontrado para o id " + id);
+        }
+
+        return levantamentos;
+    }
+
+    public List<Levantamento> getAllLevantamentos() {
+        List<Levantamento> levantamentos = levantamentoRepository.findAll();
+
+        if(levantamentos.isEmpty()){
+            throw new LevantamentoNotFoundException("Nenhum levantamento cadastrado.");
+        }
+
+        return levantamentos;
+    }
+
+
 }
