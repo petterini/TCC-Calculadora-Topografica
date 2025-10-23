@@ -22,6 +22,9 @@ public class Ponto {
     @NotNull
     private Levantamento levantamento;
 
+    @NotBlank
+    private String nome;
+
     @NotNull
     private double angulo;
 
@@ -30,4 +33,14 @@ public class Ponto {
 
     @NotNull
     private double azimute;
+
+    public Double calcularAngulo(double grau, double minuto, double segundo) {
+        this.angulo = grau + minuto/60 + segundo/3600;
+        return angulo;
+    }
+
+    public Double calcularAzimute(double grau, double minuto, double segundo) {
+        this.azimute = grau + minuto/60 + segundo/3600;
+        return azimute;
+    }
 }

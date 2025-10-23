@@ -1,5 +1,6 @@
 package com.pedropetterini.calculadora_topografica.services;
 
+import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Ponto;
 import com.pedropetterini.calculadora_topografica.repositories.PontoRepository;
@@ -7,7 +8,6 @@ import com.pedropetterini.calculadora_topografica.validators.PontoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,6 +46,24 @@ public class PontoService {
         }
 
         throw new PontoNotFoundException("Ponto não encontrado com o ID: " + id);
+    }
+
+    public void removerPonto(UUID id) {
+        if(pontoRepository.existsById(id)) {
+            pontoRepository.deleteById(id);
+        }else{
+            throw new PontoNotFoundException("Ponto não encontrado com o ID: " + id);
+        }
+    }
+
+    public Ponto alterarPonto(UUID id, PontoDTO ponto) {
+        if(pontoRepository.existsById(id)) {
+            Ponto oldPonto = pontoRepository.findById(id).get();
+            oldPonto.setAngulo(ponto.getAngulo());
+            oldPonto.setDistancia(ponto.getDistancia());
+            oldPonto.setNome(ponto.getNome());
+        }
+        return null;
     }
 
 }
