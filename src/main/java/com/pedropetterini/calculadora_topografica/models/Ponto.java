@@ -23,6 +23,9 @@ public class Ponto {
     private Levantamento levantamento;
 
     @NotBlank
+    private String estacao;
+
+    @NotBlank
     private String nome;
 
     @NotNull
@@ -34,13 +37,8 @@ public class Ponto {
     @NotNull
     private double azimute;
 
-    public Double calcularAngulo(double grau, double minuto, double segundo) {
-        this.angulo = grau + minuto/60 + segundo/3600;
-        return angulo;
-    }
+    @ManyToOne
+    @JoinColumn(name = "id_referencia", nullable = true)
+    private Ponto referencia;
 
-    public Double calcularAzimute(double grau, double minuto, double segundo) {
-        this.azimute = grau + minuto/60 + segundo/3600;
-        return azimute;
-    }
 }

@@ -3,6 +3,7 @@ package com.pedropetterini.calculadora_topografica.services;
 import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Ponto;
+import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
 import com.pedropetterini.calculadora_topografica.repositories.PontoRepository;
 import com.pedropetterini.calculadora_topografica.validators.PontoValidator;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,25 @@ import java.util.UUID;
 public class PontoService {
     private final PontoRepository pontoRepository;
     private final PontoValidator validator;
+    private final LevantamentoRepository levantamentoRepository;
 
-    public Ponto save(Ponto ponto) {
+    public Ponto salvarPonto(PontoDTO pontoDTO) {
+        Ponto ponto = new Ponto();
+        ponto.setLevantamento(levantamentoRepository.findById(pontoDTO.getLevantamentoId()).orElseThrow());
+        ponto.setEstacao(pontoDTO.getEstacao());
+        ponto.setNome(pontoDTO.getNome());
+        ponto.setDistancia(pontoDTO.getDistancia());
+        ponto.setAngulo(pontoDTO.getAngulo().toDecimal());
+
+        if (pontoDTO.getReferencia() != null) {
+            var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+            ponto.setReferencia(aux);
+            ponto.setAzimute(aux.getAzimute() + ponto.getAngulo());
+        }else{
+            ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
+        }
+
+
         return pontoRepository.save(ponto);
     }
 
@@ -56,14 +74,14 @@ public class PontoService {
         }
     }
 
-    public Ponto alterarPonto(UUID id, PontoDTO ponto) {
-        if(pontoRepository.existsById(id)) {
-            Ponto oldPonto = pontoRepository.findById(id).get();
-            oldPonto.setAngulo(ponto.getAngulo());
-            oldPonto.setDistancia(ponto.getDistancia());
-            oldPonto.setNome(ponto.getNome());
-        }
-        return null;
-    }
+//    public Ponto alterarPonto(UUID id, PontoDTO ponto) {
+//        if(pontoRepository.existsById(id)) {
+//            Ponto oldPonto = pontoRepository.findById(id).get();
+//            oldPonto.setAngulo(ponto.getAngulo());
+//            oldPonto.setDistancia(ponto.getDistancia());
+//            oldPonto.setNome(ponto.getNome());
+//        }
+//        return null;
+//    }
 
 }

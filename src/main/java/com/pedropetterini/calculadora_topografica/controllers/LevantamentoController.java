@@ -15,12 +15,12 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/levantamentos")
+@RequestMapping("levantamentos")
 public class LevantamentoController {
     private final LevantamentoService levantamentoService;
 
     @PostMapping("/cadastrarLevantamento")
-    public ResponseEntity<Object> cadastrarLevantamento(Levantamento levantamento) {
+    public ResponseEntity<Object> cadastrarLevantamento(@RequestBody Levantamento levantamento) {
         try {
             Levantamento lev = levantamentoService.cadastrar(levantamento);
             return ResponseEntity.status(HttpStatus.CREATED).body(lev);

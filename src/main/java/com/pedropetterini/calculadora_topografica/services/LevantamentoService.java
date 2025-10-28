@@ -6,7 +6,9 @@ import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepos
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +19,8 @@ public class LevantamentoService {
     private final LevantamentoRepository levantamentoRepository;
 
     public Levantamento cadastrar(Levantamento levantamento) {
+        LocalDate data = LocalDate.now();
+        levantamento.setData_criacao(data);
         return levantamentoRepository.save(levantamento);
     }
 

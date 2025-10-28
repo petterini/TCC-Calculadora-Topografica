@@ -1,29 +1,31 @@
 package com.pedropetterini.calculadora_topografica.dtos;
 
+import com.pedropetterini.calculadora_topografica.utils.Angulo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class PontoDTO {
+
+    private UUID levantamentoId;
+
+    @NotBlank
+    private String estacao;
+
     @NotBlank
     private String nome;
 
     @NotNull
-    private Double angulo;
+    private Angulo angulo;
 
     @NotNull
-    private Double distancia;
+    private double distancia;
 
-    private Double azimute;
+    private Angulo azimute;
 
-    public Double calcularAngulo(double grau, double minuto, double segundo) {
-        this.angulo = grau + minuto/60 + segundo/3600;
-        return angulo;
-    }
+    private String referencia;
 
-    public Double calcularAzimute(double grau, double minuto, double segundo) {
-        this.azimute = grau + minuto/60 + segundo/3600;
-        return azimute;
-    }
 }

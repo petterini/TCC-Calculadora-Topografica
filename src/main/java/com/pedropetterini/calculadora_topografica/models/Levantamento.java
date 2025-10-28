@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,13 +22,13 @@ public class Levantamento {
     private String nome;
 
     @NotNull
+    @Column(name = "idusuario")
     private UUID idUsuario;
 
     @NotNull
     private String tipo;
 
-    @NotNull
-    private Date data_criacao;
+    private LocalDate data_criacao;
 
     private double area;
 
