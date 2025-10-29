@@ -28,4 +28,8 @@ public class PontoDTO {
 
     private String referencia;
 
+    private Double coordX;
+
+    private Double coordY;
+
 }

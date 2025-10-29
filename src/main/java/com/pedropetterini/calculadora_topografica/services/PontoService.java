@@ -18,6 +18,7 @@ public class PontoService {
     private final PontoRepository pontoRepository;
     private final PontoValidator validator;
     private final LevantamentoRepository levantamentoRepository;
+    private final CalculoService calculoService;
 
     public Ponto salvarPonto(PontoDTO pontoDTO) {
         Ponto ponto = new Ponto();
@@ -25,15 +26,26 @@ public class PontoService {
         ponto.setEstacao(pontoDTO.getEstacao());
         ponto.setNome(pontoDTO.getNome());
         ponto.setDistancia(pontoDTO.getDistancia());
-        ponto.setAngulo(pontoDTO.getAngulo().toDecimal());
+        ponto.setAnguloLido(pontoDTO.getAngulo().toDecimal());
 
         if (pontoDTO.getReferencia() != null) {
             var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+            var pOrigem = pontoRepository.findByNomeAndLevantamentoId("Ponto 1", pontoDTO.getLevantamentoId()).orElseThrow();
             ponto.setReferencia(aux);
-            ponto.setAzimute(aux.getAzimute() + ponto.getAngulo());
+            ponto.setAnguloHz(ponto.getAnguloLido() - aux.getAnguloLido());
+            ponto.setAzimute(aux.getAzimute() + ponto.getAnguloHz());
+
+            calculoService.calcularProjecoes(ponto);
+            calculoService.calcularCoordenadas(ponto, pOrigem);
         }else{
             ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
+            ponto.setAnguloHz(0);
+            ponto.setCoordX(pontoDTO.getCoordX());
+            ponto.setCoordY(pontoDTO.getCoordY());
+
+            calculoService.calcularProjecoes(ponto);
         }
+
 
 
         return pontoRepository.save(ponto);

@@ -29,13 +29,28 @@ public class Ponto {
     private String nome;
 
     @NotNull
-    private double angulo;
+    private double anguloLido;
+
+    @NotNull
+    private double anguloHz;
 
     @NotNull
     private double distancia;
 
     @NotNull
     private double azimute;
+
+    @NotNull
+    private double projX;
+
+    @NotNull
+    private double projY;
+
+    @NotNull
+    private double coordX;
+
+    @NotNull
+    private double coordY;
 
     @ManyToOne
     @JoinColumn(name = "id_referencia", nullable = true)
