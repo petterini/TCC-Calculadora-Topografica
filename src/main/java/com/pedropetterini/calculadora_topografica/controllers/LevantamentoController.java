@@ -1,10 +1,12 @@
 package com.pedropetterini.calculadora_topografica.controllers;
 
 import com.pedropetterini.calculadora_topografica.dtos.ErroRespostaDTO;
+import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.DuplicatedLevantamentoException;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import com.pedropetterini.calculadora_topografica.services.LevantamentoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,10 @@ import java.util.UUID;
 public class LevantamentoController {
     private final LevantamentoService levantamentoService;
 
-    @PostMapping("/cadastrarLevantamento")
-    public ResponseEntity<Object> cadastrarLevantamento(@RequestBody Levantamento levantamento) {
+    @PostMapping()
+    public ResponseEntity<Object> cadastrarLevantamento(@Valid @RequestBody LevantamentoDTO levantamentoDTO) {
         try {
-            Levantamento lev = levantamentoService.cadastrar(levantamento);
+            Levantamento lev = levantamentoService.cadastrar(levantamentoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(lev);
         } catch (DuplicatedLevantamentoException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -62,6 +64,15 @@ public class LevantamentoController {
         }
     }
 
-    
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> alterarLevantamento(@PathVariable UUID id, @Valid @RequestBody LevantamentoDTO levantamentoDTO) {
+        try{
+            var levantamento = levantamentoService.alterarLevantamento(id, levantamentoDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(levantamento);
+        }catch (LevantamentoNotFoundException e){
+            var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
+    }
 
 }

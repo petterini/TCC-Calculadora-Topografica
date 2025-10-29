@@ -1,8 +1,10 @@
 package com.pedropetterini.calculadora_topografica.services;
 
+import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
@@ -18,9 +20,13 @@ public class LevantamentoService {
 
     private final LevantamentoRepository levantamentoRepository;
 
-    public Levantamento cadastrar(Levantamento levantamento) {
-        LocalDate data = LocalDate.now();
-        levantamento.setData_criacao(data);
+    public Levantamento cadastrar(LevantamentoDTO levantamentoDTO) {
+        Levantamento levantamento = new Levantamento();
+        levantamento.setData_criacao(LocalDate.now());
+        levantamento.setNome(levantamentoDTO.getNome());
+        levantamento.setIdUsuario(levantamentoDTO.getIdUsuario());
+        levantamento.setTipo(levantamentoDTO.getTipo());
+
         return levantamentoRepository.save(levantamento);
     }
 
@@ -53,4 +59,12 @@ public class LevantamentoService {
     }
 
 
+    public Levantamento alterarLevantamento(UUID id, @Valid LevantamentoDTO levantamentoDTO) {
+        Levantamento levantamento = getLevantamentoById(id);
+        levantamento.setNome(levantamentoDTO.getNome());
+        levantamento.setIdUsuario(levantamentoDTO.getIdUsuario());
+        levantamento.setTipo(levantamentoDTO.getTipo());
+
+        return levantamentoRepository.save(levantamento);
+    }
 }
