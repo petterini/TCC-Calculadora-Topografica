@@ -1,6 +1,7 @@
 package com.pedropetterini.calculadora_topografica.services;
 
 import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
+import com.pedropetterini.calculadora_topografica.dtos.response.PontoResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Ponto;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
@@ -20,7 +21,7 @@ public class PontoService {
     private final LevantamentoRepository levantamentoRepository;
     private final CalculoService calculoService;
 
-    public Ponto salvarPonto(PontoDTO pontoDTO) {
+    public PontoResponseDTO salvarPonto(PontoDTO pontoDTO) {
         Ponto ponto = new Ponto();
         ponto.setLevantamento(levantamentoRepository.findById(pontoDTO.getLevantamentoId()).orElseThrow());
         ponto.setEstacao(pontoDTO.getEstacao());
@@ -46,9 +47,8 @@ public class PontoService {
             calculoService.calcularProjecoes(ponto);
         }
 
-
-
-        return pontoRepository.save(ponto);
+        Ponto pontoResponse = pontoRepository.save(ponto);
+        return PontoResponseDTO.toDto(pontoResponse);
     }
 
     public List<Ponto> cadastrarListaDePontos(List<Ponto> pontos) {
@@ -62,11 +62,11 @@ public class PontoService {
         return pontoRepository.save(ponto);
     }
 
-    public List<Ponto> listarPontosPorLevantamento(UUID idLevantamento) {
+    public List<PontoResponseDTO> listarPontosPorLevantamento(UUID idLevantamento) {
         if(pontoRepository.existsByLevantamentoId(idLevantamento)) {
-            return pontoRepository.findByLevantamentoId(idLevantamento);
+            List<Ponto> pontos = pontoRepository.findByLevantamentoId(idLevantamento);
+            return PontoResponseDTO.toDto(pontos);
         }
-
         throw new PontoNotFoundException("Pontos não encontrados com o levantamento ID: " + idLevantamento);
     }
 
