@@ -1,6 +1,8 @@
 package com.pedropetterini.calculadora_topografica.services;
 
 import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
+import com.pedropetterini.calculadora_topografica.dtos.mapper.LevantamentoMapper;
+import com.pedropetterini.calculadora_topografica.dtos.response.LevantamentoResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
@@ -19,21 +21,20 @@ import java.util.UUID;
 public class LevantamentoService {
 
     private final LevantamentoRepository levantamentoRepository;
+    private final CalculoService calculoService;
+    private final LevantamentoMapper levantamentoMapper;
 
     public Levantamento cadastrar(LevantamentoDTO levantamentoDTO) {
-        Levantamento levantamento = new Levantamento();
+        Levantamento levantamento = levantamentoMapper.toEntity(levantamentoDTO);
         levantamento.setData_criacao(LocalDate.now());
-        levantamento.setNome(levantamentoDTO.getNome());
-        levantamento.setIdUsuario(levantamentoDTO.getIdUsuario());
-        levantamento.setTipo(levantamentoDTO.getTipo());
 
         return levantamentoRepository.save(levantamento);
     }
 
     public Levantamento getLevantamentoById(UUID id) {
-        if(levantamentoRepository.existsById(id)) {
+        if (levantamentoRepository.existsById(id)) {
             return levantamentoRepository.findById(id).get();
-        }else{
+        } else {
             throw new LevantamentoNotFoundException("Levantamento não encontrado");
         }
     }
@@ -41,7 +42,7 @@ public class LevantamentoService {
     public List<Levantamento> getLevantamentoByUser(UUID id) {
         List<Levantamento> levantamentos = levantamentoRepository.getLevantamentoByIdUsuario(id);
 
-        if(levantamentos.isEmpty()){
+        if (levantamentos.isEmpty()) {
             throw new LevantamentoNotFoundException("Nenhum levantamento encontrado para o id " + id);
         }
 
@@ -51,7 +52,7 @@ public class LevantamentoService {
     public List<Levantamento> getAllLevantamentos() {
         List<Levantamento> levantamentos = levantamentoRepository.findAll();
 
-        if(levantamentos.isEmpty()){
+        if (levantamentos.isEmpty()) {
             throw new LevantamentoNotFoundException("Nenhum levantamento cadastrado.");
         }
 
@@ -66,5 +67,15 @@ public class LevantamentoService {
         levantamento.setTipo(levantamentoDTO.getTipo());
 
         return levantamentoRepository.save(levantamento);
+    }
+
+    public LevantamentoResponseDTO calcular(UUID idLevantamento) {
+        if (levantamentoRepository.existsById(idLevantamento)) {
+            Levantamento levantamento = calculoService.calcularAreaEPerimetro(levantamentoRepository.getLevantamentoById(idLevantamento));
+            levantamentoRepository.save(levantamento);
+            return LevantamentoResponseDTO.toDTO(levantamento);
+        } else {
+            throw new LevantamentoNotFoundException("Levantamento não encontrado para o id " + idLevantamento);
+        }
     }
 }

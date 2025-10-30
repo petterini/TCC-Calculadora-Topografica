@@ -10,6 +10,7 @@ import com.pedropetterini.calculadora_topografica.validators.PontoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PontoService {
     private final PontoRepository pontoRepository;
-    private final PontoValidator validator;
     private final LevantamentoRepository levantamentoRepository;
     private final CalculoService calculoService;
 
@@ -31,35 +31,27 @@ public class PontoService {
 
         if (pontoDTO.getReferencia() != null) {
             var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
-            var pOrigem = pontoRepository.findByNomeAndLevantamentoId("Ponto 1", pontoDTO.getLevantamentoId()).orElseThrow();
             ponto.setReferencia(aux);
             ponto.setAnguloHz(ponto.getAnguloLido() - aux.getAnguloLido());
             ponto.setAzimute(aux.getAzimute() + ponto.getAnguloHz());
-
-            calculoService.calcularProjecoes(ponto);
-            calculoService.calcularCoordenadas(ponto, pOrigem);
         }else{
             ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
             ponto.setAnguloHz(0);
-            ponto.setCoordX(pontoDTO.getCoordX());
-            ponto.setCoordY(pontoDTO.getCoordY());
-
-            calculoService.calcularProjecoes(ponto);
         }
+
+        calculoService.calcularProjecoes(ponto);
+        calculoService.calcularCoordenadas(ponto, ponto.getLevantamento());
 
         Ponto pontoResponse = pontoRepository.save(ponto);
         return PontoResponseDTO.toDto(pontoResponse);
     }
 
-    public List<Ponto> cadastrarListaDePontos(List<Ponto> pontos) {
-        validator.validar(pontos);
-        pontoRepository.saveAll(pontos);
-        return pontos;
-    }
-
-    public Ponto cadastrarPonto(Ponto ponto) {
-        validator.validar(ponto);
-        return pontoRepository.save(ponto);
+    public List<PontoResponseDTO> salvarListaDePontos(List<PontoDTO> pontos) {
+        List <PontoResponseDTO> pontosDTO = new ArrayList<>();
+        for (PontoDTO ponto : pontos) {
+            pontosDTO.add(salvarPonto(ponto));
+        }
+        return pontosDTO;
     }
 
     public List<PontoResponseDTO> listarPontosPorLevantamento(UUID idLevantamento) {

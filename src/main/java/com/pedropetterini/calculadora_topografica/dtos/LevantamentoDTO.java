@@ -19,4 +19,10 @@ public class LevantamentoDTO {
 
     @NotBlank
     private String tipo;
+
+    @NotNull
+    private Double coordX;
+
+    @NotNull
+    private Double coordY;
 }

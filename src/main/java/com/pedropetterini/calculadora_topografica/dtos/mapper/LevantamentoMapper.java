@@ -16,8 +16,8 @@ public class LevantamentoMapper {
         this.modelMapper = modelMapper;
     }
 
-    public Levantamento toEntity(LevantamentoDTO levantamentoDTODTO){
-        Levantamento levantamento = modelMapper.map(levantamentoDTODTO, Levantamento.class);
+    public Levantamento toEntity(LevantamentoDTO levantamentoDTO){
+        Levantamento levantamento = modelMapper.map(levantamentoDTO, Levantamento.class);
         return levantamento;
     }
 

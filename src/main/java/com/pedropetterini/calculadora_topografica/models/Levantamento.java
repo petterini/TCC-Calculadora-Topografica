@@ -36,4 +36,8 @@ public class Levantamento {
 
     private int croqui;
 
+    private double coordX;
+
+    private double coordY;
+
 }

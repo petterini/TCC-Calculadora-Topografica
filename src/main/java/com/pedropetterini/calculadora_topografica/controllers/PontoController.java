@@ -30,6 +30,16 @@ public class PontoController {
         }
     }
 
+    @PostMapping("/cadastrarLista")
+    public ResponseEntity<Object> cadastrarLista(@Valid @RequestBody List<PontoDTO> pontos) {
+        try {
+            List<PontoResponseDTO> pontosDTO = pontoService.salvarListaDePontos(pontos);
+            return ResponseEntity.status(HttpStatus.CREATED).body(pontosDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping("listarPorLevantamento/{idLevantamento}")
     public ResponseEntity<Object> listarPorLevantamento(@PathVariable UUID idLevantamento) {
         try {
