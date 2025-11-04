@@ -8,9 +8,7 @@ import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -77,6 +75,7 @@ public class LevantamentoService {
                 calculoService.calcularAreaEPerimetro(levantamento);
             }else if(levantamento.getTipo().equals("Caminhamento")){
                 calculoService.calcularErroAngular(levantamento);
+                calculoService.calcularAzimuteProjecoesPerimetro(levantamento);
             }
 
             levantamentoRepository.save(levantamento);

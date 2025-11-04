@@ -42,4 +42,8 @@ public class Levantamento {
 
     private double erroAngular;
 
+    private double erroLinearAbs;
+
+
+
 }

@@ -25,6 +25,12 @@ public class LevantamentoResponseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double erroAngular;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Double erroLinearAbs;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Double erroLinearRelativo;
+
     public static LevantamentoResponseDTO toDTO(Levantamento levantamento) {
         LevantamentoResponseDTO responseDTO = new LevantamentoResponseDTO();
         responseDTO.setId(levantamento.getId());
@@ -36,6 +42,8 @@ public class LevantamentoResponseDTO {
 
         if(levantamento.getTipo().equals("Caminhamento")){
             responseDTO.setErroAngular(levantamento.getErroAngular());
+            responseDTO.setErroLinearAbs(levantamento.getErroLinearAbs());
+            responseDTO.setErroLinearRelativo(levantamento.getErroLinearAbs() / (levantamento.getPerimetro() / 1000));
         }
 
         return responseDTO;

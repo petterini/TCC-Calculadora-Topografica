@@ -42,6 +42,10 @@ public class Ponto {
 
     private double projY;
 
+    private double cProjX;
+
+    private double cProjY;
+
     private double coordX;
 
     private double coordY;

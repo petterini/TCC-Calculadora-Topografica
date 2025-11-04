@@ -39,16 +39,17 @@ public class PontoService {
                 ponto.setAnguloHz(0);
             }
 
-
+            calculoService.calcularProjecoes(ponto);
+            calculoService.calcularCoordenadas(ponto, ponto.getLevantamento());
         }else if(ponto.getLevantamento().getTipo().equals("Caminhamento")){
             if(pontoDTO.getReferencia() != null) {
                 var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
                 ponto.setReferencia(aux);
+            }else{
+                ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
             }
         }
 
-        calculoService.calcularProjecoes(ponto);
-        calculoService.calcularCoordenadas(ponto, ponto.getLevantamento());
 
         Ponto pontoResponse = pontoRepository.save(ponto);
         return PontoResponseDTO.toDto(pontoResponse);
@@ -59,8 +60,6 @@ public class PontoService {
         for (PontoDTO ponto : pontos) {
             pontosDTO.add(salvarPonto(ponto));
         }
-
-
 
         return pontosDTO;
     }
