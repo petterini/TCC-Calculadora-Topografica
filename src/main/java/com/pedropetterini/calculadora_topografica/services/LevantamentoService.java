@@ -71,7 +71,14 @@ public class LevantamentoService {
 
     public LevantamentoResponseDTO calcular(UUID idLevantamento) {
         if (levantamentoRepository.existsById(idLevantamento)) {
-            Levantamento levantamento = calculoService.calcularAreaEPerimetro(levantamentoRepository.getLevantamentoById(idLevantamento));
+            Levantamento levantamento = levantamentoRepository.getLevantamentoById(idLevantamento);
+
+            if(levantamento.getTipo().equals("Irradiação")){
+                calculoService.calcularAreaEPerimetro(levantamento);
+            }else if(levantamento.getTipo().equals("Caminhamento")){
+                calculoService.calcularErroAngular(levantamento);
+            }
+
             levantamentoRepository.save(levantamento);
             return LevantamentoResponseDTO.toDTO(levantamento);
         } else {

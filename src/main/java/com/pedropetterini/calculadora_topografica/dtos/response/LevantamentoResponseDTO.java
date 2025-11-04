@@ -1,5 +1,6 @@
 package com.pedropetterini.calculadora_topografica.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,9 @@ public class LevantamentoResponseDTO {
 
     private Double perimetro;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Double erroAngular;
+
     public static LevantamentoResponseDTO toDTO(Levantamento levantamento) {
         LevantamentoResponseDTO responseDTO = new LevantamentoResponseDTO();
         responseDTO.setId(levantamento.getId());
@@ -29,6 +33,11 @@ public class LevantamentoResponseDTO {
         responseDTO.setTipo(levantamento.getTipo());
         responseDTO.setArea(levantamento.getArea());
         responseDTO.setPerimetro(levantamento.getPerimetro());
+
+        if(levantamento.getTipo().equals("Caminhamento")){
+            responseDTO.setErroAngular(levantamento.getErroAngular());
+        }
+
         return responseDTO;
     }
 }

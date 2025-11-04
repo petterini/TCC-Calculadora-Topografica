@@ -1,14 +1,14 @@
 package com.pedropetterini.calculadora_topografica.services;
 
-import com.pedropetterini.calculadora_topografica.dtos.response.PontoResponseDTO;
+import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import com.pedropetterini.calculadora_topografica.models.Ponto;
+import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
 import com.pedropetterini.calculadora_topografica.repositories.PontoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -93,4 +93,24 @@ public class CalculoService {
 
         return levantamento;
     }
+
+    public Levantamento calcularErroAngular(Levantamento levantamento) {
+        int nPontos = pontoRepository.countByLevantamentoId(levantamento.getId());
+        double soma = 0.0;
+
+        List<Ponto>  pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+        for (Ponto ponto : pontos) {
+            soma += ponto.getAnguloLido();
+        }
+
+        double erroAngular = soma - (nPontos - 2) * 180;
+
+        if(erroAngular > 100 || erroAngular < -100){
+            throw new IllegalArgumentException("Erro angular muito alto: " + erroAngular);
+        }else {
+            levantamento.setErroAngular(erroAngular);
+        }
+        return levantamento;
+    }
+
 }

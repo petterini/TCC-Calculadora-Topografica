@@ -14,4 +14,6 @@ public interface PontoRepository extends JpaRepository<Ponto, UUID> {
     boolean existsByLevantamentoId(UUID idLevantamento);
 
     Optional<Ponto> findByNomeAndLevantamentoId(@NotNull String nome, @NotNull UUID idLevantamento);
+
+    int countByLevantamentoId(@NotNull UUID idLevantamento);
 }

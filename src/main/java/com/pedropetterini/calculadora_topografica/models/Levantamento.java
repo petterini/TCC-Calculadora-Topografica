@@ -40,4 +40,6 @@ public class Levantamento {
 
     private double coordY;
 
+    private double erroAngular;
+
 }

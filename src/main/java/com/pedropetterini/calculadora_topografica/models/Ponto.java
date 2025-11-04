@@ -31,25 +31,19 @@ public class Ponto {
     @NotNull
     private double anguloLido;
 
-    @NotNull
     private double anguloHz;
 
     @NotNull
     private double distancia;
 
-    @NotNull
     private double azimute;
 
-    @NotNull
     private double projX;
 
-    @NotNull
     private double projY;
 
-    @NotNull
     private double coordX;
 
-    @NotNull
     private double coordY;
 
     @ManyToOne

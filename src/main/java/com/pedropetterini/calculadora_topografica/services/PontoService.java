@@ -6,7 +6,6 @@ import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundExcept
 import com.pedropetterini.calculadora_topografica.models.Ponto;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
 import com.pedropetterini.calculadora_topografica.repositories.PontoRepository;
-import com.pedropetterini.calculadora_topografica.validators.PontoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,14 +28,23 @@ public class PontoService {
         ponto.setDistancia(pontoDTO.getDistancia());
         ponto.setAnguloLido(pontoDTO.getAngulo().toDecimal());
 
-        if (pontoDTO.getReferencia() != null) {
-            var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
-            ponto.setReferencia(aux);
-            ponto.setAnguloHz(ponto.getAnguloLido() - aux.getAnguloLido());
-            ponto.setAzimute(aux.getAzimute() + ponto.getAnguloHz());
-        }else{
-            ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
-            ponto.setAnguloHz(0);
+        if(ponto.getLevantamento().getTipo().equals("Irradiação")){
+            if (pontoDTO.getReferencia() != null) {
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+                ponto.setReferencia(aux);
+                ponto.setAnguloHz(ponto.getAnguloLido() - aux.getAnguloLido());
+                ponto.setAzimute(aux.getAzimute() + ponto.getAnguloHz());
+            }else{
+                ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
+                ponto.setAnguloHz(0);
+            }
+
+
+        }else if(ponto.getLevantamento().getTipo().equals("Caminhamento")){
+            if(pontoDTO.getReferencia() != null) {
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+                ponto.setReferencia(aux);
+            }
         }
 
         calculoService.calcularProjecoes(ponto);
@@ -51,6 +59,9 @@ public class PontoService {
         for (PontoDTO ponto : pontos) {
             pontosDTO.add(salvarPonto(ponto));
         }
+
+
+
         return pontosDTO;
     }
 
@@ -77,6 +88,8 @@ public class PontoService {
             throw new PontoNotFoundException("Ponto não encontrado com o ID: " + id);
         }
     }
+
+
 
 //    public Ponto alterarPonto(UUID id, PontoDTO ponto) {
 //        if(pontoRepository.existsById(id)) {
