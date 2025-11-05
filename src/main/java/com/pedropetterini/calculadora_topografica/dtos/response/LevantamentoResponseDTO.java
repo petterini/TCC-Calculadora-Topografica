@@ -31,6 +31,9 @@ public class LevantamentoResponseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double erroLinearRelativo;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String mensagemAviso;
+
     public static LevantamentoResponseDTO toDTO(Levantamento levantamento) {
         LevantamentoResponseDTO responseDTO = new LevantamentoResponseDTO();
         responseDTO.setId(levantamento.getId());
@@ -44,6 +47,13 @@ public class LevantamentoResponseDTO {
             responseDTO.setErroAngular(levantamento.getErroAngular());
             responseDTO.setErroLinearAbs(levantamento.getErroLinearAbs());
             responseDTO.setErroLinearRelativo(levantamento.getErroLinearAbs() / (levantamento.getPerimetro() / 1000));
+
+            if(responseDTO.getErroAngular() > 1 || responseDTO.getErroAngular() < -1){
+                responseDTO.setMensagemAviso("O erro angular está alto, é recomendado refazer o levantamento.");
+            }
+            if(responseDTO.getErroLinearRelativo() > 1){
+                responseDTO.setMensagemAviso("O erro linear está alto, é recomendado refazer o levantamento.");
+            }
         }
 
         return responseDTO;

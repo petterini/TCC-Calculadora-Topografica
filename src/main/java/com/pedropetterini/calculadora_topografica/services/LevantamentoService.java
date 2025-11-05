@@ -75,7 +75,8 @@ public class LevantamentoService {
                 calculoService.calcularAreaEPerimetro(levantamento);
             }else if(levantamento.getTipo().equals("Caminhamento")){
                 calculoService.calcularErroAngular(levantamento);
-                calculoService.calcularAzimuteProjecoesPerimetro(levantamento);
+                calculoService.calcularCaminhamento(levantamento);
+                calculoService.calcularArea(levantamento);
             }
 
             levantamentoRepository.save(levantamento);

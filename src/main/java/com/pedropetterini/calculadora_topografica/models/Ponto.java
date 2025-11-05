@@ -50,6 +50,10 @@ public class Ponto {
 
     private double coordY;
 
+    private double xy;
+
+    private double yx;
+
     @ManyToOne
     @JoinColumn(name = "id_referencia", nullable = true)
     private Ponto referencia;

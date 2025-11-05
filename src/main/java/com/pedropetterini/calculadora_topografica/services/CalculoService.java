@@ -101,17 +101,14 @@ public class CalculoService {
             soma += ponto.getAnguloLido();
         }
 
-        double erroAngular = soma - (nPontos - 2) * 180;
+        double erroAngular = soma - ((nPontos - 2) * 180);
 
-        if (erroAngular > 100 || erroAngular < -100) {
-            throw new IllegalArgumentException("Erro angular muito alto: " + erroAngular);
-        } else {
-            levantamento.setErroAngular(erroAngular);
-        }
+        levantamento.setErroAngular(erroAngular);
+
         return levantamento;
     }
 
-    public List<Ponto> calcularAzimuteProjecoesPerimetro(Levantamento levantamento) {
+    public List<Ponto> calcularCaminhamento(Levantamento levantamento) {
         List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
         double correcao = -levantamento.getErroAngular() / pontos.size();
         double perimetro = 0.0;
@@ -138,7 +135,53 @@ public class CalculoService {
 
         levantamento.setErroLinearAbs(Math.sqrt(projX * projX + projY * projY));
         levantamento.setPerimetro(perimetro);
+        pontos = calcularCoordenadas(pontos, levantamento, projX, projY);
         return pontos;
     }
+
+    public List<Ponto> calcularCoordenadas(List<Ponto> pontos, Levantamento levantamento, double projX, double projY) {
+        double compensacaoX = projX / levantamento.getPerimetro();
+        double compensacaoY = projY / levantamento.getPerimetro();
+
+        for (Ponto ponto : pontos) {
+            ponto.setCProjX(ponto.getDistancia() * compensacaoX);
+            ponto.setCProjY(ponto.getDistancia() * compensacaoY);
+
+            if (ponto.getReferencia() == null) {
+                ponto.setCoordX(ponto.getProjX() + -ponto.getCProjX() + levantamento.getCoordX());
+                ponto.setCoordY(ponto.getProjY() + -ponto.getCProjY() + levantamento.getCoordY());
+            } else {
+                ponto.setCoordX(ponto.getProjX() + -ponto.getCProjX() + ponto.getReferencia().getCoordX());
+                ponto.setCoordY(ponto.getProjY() + -ponto.getCProjY() + ponto.getReferencia().getCoordY());
+            }
+        }
+
+        for (int i = 0; i < pontos.size(); i++) {
+            if(i == pontos.size() - 1){
+                pontos.get(i).setYx(pontos.get(i).getCoordY() * pontos.get(0).getCoordX());
+                pontos.get(i).setXy(pontos.get(i).getCoordX() * pontos.get(0).getCoordY());
+            }else{
+                pontos.get(i).setYx(pontos.get(i).getCoordY() * pontos.get(i + 1).getCoordX());
+                pontos.get(i).setXy(pontos.get(i).getCoordX() * pontos.get(i + 1).getCoordY());
+            }
+        }
+
+        return pontos;
+    }
+
+    public Levantamento calcularArea(Levantamento levantamento) {
+        List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+        double somaXY = 0;
+        double somaYX = 0;
+
+        for (Ponto ponto : pontos) {
+            somaXY += ponto.getXy();
+            somaYX += ponto.getYx();
+        }
+
+        levantamento.setArea((somaXY - somaYX) / 2);
+        return levantamento;
+    }
+
 
 }
