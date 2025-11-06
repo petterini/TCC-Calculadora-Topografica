@@ -71,13 +71,13 @@ public class LevantamentoService {
         if (levantamentoRepository.existsById(idLevantamento)) {
             Levantamento levantamento = levantamentoRepository.getLevantamentoById(idLevantamento);
 
-            if(levantamento.getTipo().equals("Irradiação")){
+            if (levantamento.getTipo().equals("Irradiação")) {
                 calculoService.calcularAreaEPerimetro(levantamento);
-            }else if(levantamento.getTipo().equals("Caminhamento")){
+            } else if (levantamento.getTipo().equals("Caminhamento")) {
                 calculoService.calcularErroAngular(levantamento);
                 calculoService.calcularCaminhamento(levantamento);
                 calculoService.calcularArea(levantamento);
-            }else if(levantamento.getTipo().equals("Caminhamento Irradiado")){
+            } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
                 calculoService.calcularErroAngular(levantamento);
                 calculoService.calcularCaminhamento(levantamento);
                 calculoService.calcularPontosIrradiados(levantamento);
@@ -89,4 +89,15 @@ public class LevantamentoService {
             throw new LevantamentoNotFoundException("Levantamento não encontrado para o id " + idLevantamento);
         }
     }
+
+    public LevantamentoResponseDTO calcular(UUID idLevantamento, List<String> nomes) {
+        if (levantamentoRepository.existsById(idLevantamento)) {
+            Levantamento lev = calculoService.calcularAreaEPerimetroPorListaDePontos(levantamentoRepository.getLevantamentoById(idLevantamento), nomes);
+            return LevantamentoResponseDTO.toDTO(lev);
+
+        } else {
+            throw new LevantamentoNotFoundException("Levantamento não encontrado para o id " + idLevantamento);
+        }
+    }
 }
+

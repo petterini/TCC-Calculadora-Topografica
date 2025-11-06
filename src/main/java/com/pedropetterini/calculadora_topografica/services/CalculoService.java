@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -50,6 +51,50 @@ public class CalculoService {
             }
         }
         levantamento.setArea(Math.abs((det1 - det2) / 2));
+
+    }
+
+    public Levantamento calcularAreaEPerimetroPorListaDePontos(Levantamento levantamento, List<String> nomes) {
+
+        Levantamento lev = levantamento;
+        lev.setNome("Cálculo parcial do levantamento: " + levantamento.getNome());
+
+        List<Ponto> pontos = pontoRepository.findAllByNomesAndLevantamento(nomes, levantamento.getId());
+        pontos.sort(Comparator.comparing(p -> nomes.indexOf(p.getNome())));
+
+
+        double det1 = 0.0;
+        double det2 = 0.0;
+
+        double perimetro = 0;
+        double dx = 0;
+        double dy = 0;
+
+        if (pontos.size() < 3) {
+            throw new IllegalArgumentException("O levantamento precisa de pelo menos 3 pontos para calcular a área.");
+        }
+
+        for (int i = 0; i < pontos.size(); i++) {
+            if (i == pontos.size() - 1) {
+                det1 += pontos.get(i).getCoordY() * pontos.get(0).getCoordX();
+                det2 += pontos.get(i).getCoordX() * pontos.get(0).getCoordY();
+
+                dx = pontos.get(0).getCoordX() - pontos.get(i).getCoordX();
+                dy = pontos.get(0).getCoordY() - pontos.get(i).getCoordY();
+
+            } else {
+                det1 += pontos.get(i).getCoordY() * pontos.get(i + 1).getCoordX();
+                det2 += pontos.get(i).getCoordX() * pontos.get(i + 1).getCoordY();
+
+                dx = pontos.get(i + 1).getCoordX() - pontos.get(i).getCoordX();
+                dy = pontos.get(i + 1).getCoordY() - pontos.get(i).getCoordY();
+            }
+            perimetro += Math.sqrt(dx * dx + dy * dy);
+        }
+        lev.setArea(Math.abs((det1 - det2) / 2));
+
+
+        return lev;
 
     }
 
@@ -120,7 +165,7 @@ public class CalculoService {
 
         if (levantamento.getTipo().equals("Caminhamento")) {
             pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
-        }else if(levantamento.getTipo().equals("Caminhamento Irradiado")){
+        } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
             pontos = pontoRepository.findEstacoesByLevantamentoId(levantamento.getId());
         }
         double correcao = -levantamento.getErroAngular() / pontos.size();
@@ -137,7 +182,7 @@ public class CalculoService {
 
                 ponto.setAzimute(az);
 
-            } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
+            } else if (levantamento.getTipo().equals("Caminhamento Irradiado") && ponto.getAzimuteRe() > 0) {
                 double az = ponto.getAzimuteRe() + ponto.getAnguloHz();
 
                 if (az > 360)
@@ -205,9 +250,11 @@ public class CalculoService {
         for (Ponto ponto : pontos) {
             ponto.setAnguloHz(ponto.getAnguloLido());
             double azimute = ponto.getReferencia().getAzimute() + ponto.getAnguloHz() + 180;
-            if(azimute > 360){
+            System.out.println("Ponto: " + ponto.getNome() + " Azimute: " + azimute);
+            while (azimute > 360) {
                 azimute -= 360;
             }
+            System.out.println("Ponto: " + ponto.getNome() + " Azimute: " + azimute);
             ponto.setAzimute(azimute);
             calcularProjecoes(ponto);
             ponto.setCoordX(ponto.getProjX() + ponto.getReferencia().getCoordX());

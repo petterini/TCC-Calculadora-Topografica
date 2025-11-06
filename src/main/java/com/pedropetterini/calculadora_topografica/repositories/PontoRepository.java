@@ -23,4 +23,7 @@ public interface PontoRepository extends JpaRepository<Ponto, UUID> {
     @Query("SELECT p FROM Ponto p WHERE p.levantamento.id = :levantamentoId AND p.nome LIKE 'Ponto%'")
     List<Ponto> findPontosByLevantamentoId(@Param("levantamentoId") UUID levantamentoId);
 
+    @Query("SELECT p FROM Ponto p WHERE p.levantamento.id = :levantamentoId AND p.nome IN :nomes")
+    List<Ponto> findAllByNomesAndLevantamento(@Param("nomes") List<String> nomes, @Param("levantamentoId") UUID levantamentoId);
+
 }

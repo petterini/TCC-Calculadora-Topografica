@@ -50,7 +50,11 @@ public class PontoService {
             }
         }else if(ponto.getLevantamento().getTipo().equals("Caminhamento Irradiado")){
             if(pontoDTO.getReferencia() == null) {
-                ponto.setAzimuteRe(pontoDTO.getAzimuteRe().toDecimal());
+                if(ponto.getAzimuteRe() != 0){
+                    ponto.setAzimuteRe(pontoDTO.getAzimuteRe().toDecimal());
+                }else{
+                    ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
+                }
             }else{
                 var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
                 ponto.setReferencia(aux);

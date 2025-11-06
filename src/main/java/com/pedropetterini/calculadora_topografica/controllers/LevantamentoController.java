@@ -87,4 +87,15 @@ public class LevantamentoController {
         }
     }
 
+    @PostMapping("/calcularParcial/{idLevantamento}")
+    public ResponseEntity<Object> calcularParcial(@PathVariable UUID idLevantamento, @Valid @RequestBody List<String> lista) {
+        try {
+            var levantamento = levantamentoService.calcular(idLevantamento, lista);
+            return ResponseEntity.status(HttpStatus.OK).body(levantamento);
+        }catch (LevantamentoNotFoundException e){
+            var errorDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
+            return ResponseEntity.status(errorDTO.status()).body(errorDTO);
+        }
+    }
+
 }
