@@ -18,8 +18,10 @@ public class LevantamentoResponseDTO {
 
     private String tipo;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double area;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double perimetro;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -43,7 +45,7 @@ public class LevantamentoResponseDTO {
         responseDTO.setArea(levantamento.getArea());
         responseDTO.setPerimetro(levantamento.getPerimetro());
 
-        if(levantamento.getTipo().equals("Caminhamento")){
+        if(levantamento.getTipo().equals("Caminhamento") || levantamento.getTipo().equals("Caminhamento Irradiado")){
             responseDTO.setErroAngular(levantamento.getErroAngular());
             responseDTO.setErroLinearAbs(levantamento.getErroLinearAbs());
             responseDTO.setErroLinearRelativo(levantamento.getErroLinearAbs() / (levantamento.getPerimetro() / 1000));

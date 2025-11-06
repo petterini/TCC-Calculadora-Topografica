@@ -77,6 +77,10 @@ public class LevantamentoService {
                 calculoService.calcularErroAngular(levantamento);
                 calculoService.calcularCaminhamento(levantamento);
                 calculoService.calcularArea(levantamento);
+            }else if(levantamento.getTipo().equals("Caminhamento Irradiado")){
+                calculoService.calcularErroAngular(levantamento);
+                calculoService.calcularCaminhamento(levantamento);
+                calculoService.calcularPontosIrradiados(levantamento);
             }
 
             levantamentoRepository.save(levantamento);

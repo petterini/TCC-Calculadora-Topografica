@@ -12,7 +12,6 @@ public class PontoDTO {
 
     private UUID levantamentoId;
 
-    @NotBlank
     private String estacao;
 
     @NotBlank
@@ -28,8 +27,10 @@ public class PontoDTO {
 
     private String referencia;
 
-    private Double coordX;
+    private double coordX;
 
-    private Double coordY;
+    private double coordY;
+
+    private Angulo azimuteRe;
 
 }

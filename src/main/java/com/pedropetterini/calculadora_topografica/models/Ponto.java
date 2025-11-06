@@ -22,7 +22,6 @@ public class Ponto {
     @NotNull
     private Levantamento levantamento;
 
-    @NotBlank
     private String estacao;
 
     @NotBlank
@@ -53,6 +52,8 @@ public class Ponto {
     private double xy;
 
     private double yx;
+
+    private double azimuteRe;
 
     @ManyToOne
     @JoinColumn(name = "id_referencia", nullable = true)

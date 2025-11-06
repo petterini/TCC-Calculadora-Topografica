@@ -1,5 +1,6 @@
 package com.pedropetterini.calculadora_topografica.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.pedropetterini.calculadora_topografica.models.Ponto;
 import lombok.Data;
 
@@ -10,7 +11,10 @@ import java.util.stream.Collectors;
 @Data
 public class PontoResponseDTO {
     private UUID id;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String estacao;
+
     private String nome;
     private double anguloLido;
     private double anguloHz;

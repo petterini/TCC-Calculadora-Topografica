@@ -7,6 +7,7 @@ import com.pedropetterini.calculadora_topografica.repositories.PontoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,12 +27,11 @@ public class CalculoService {
         ponto.setCoordY(levantamento.getCoordY() + ponto.getProjY());
     }
 
-    public Levantamento calcularAreaDeterminantes(Levantamento levantamento) {
+    public void calcularAreaDeterminantes(Levantamento levantamento) {
         if (!pontoRepository.existsByLevantamentoId(levantamento.getId())) {
             throw new LevantamentoNotFoundException("Levantamento não encontrado para o ID: " + levantamento.getId());
         }
         List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
-        double area = 0.0;
         double det1 = 0.0;
         double det2 = 0.0;
 
@@ -51,10 +51,9 @@ public class CalculoService {
         }
         levantamento.setArea(Math.abs((det1 - det2) / 2));
 
-        return levantamento;
     }
 
-    public Levantamento calcularPerimetro(Levantamento levantamento) {
+    public void calcularPerimetro(Levantamento levantamento) {
         if (!pontoRepository.existsByLevantamentoId(levantamento.getId())) {
             throw new LevantamentoNotFoundException("Levantamento não encontrado para o ID: " + levantamento.getId());
         }
@@ -82,21 +81,29 @@ public class CalculoService {
             }
         }
         levantamento.setPerimetro(perimetro);
-        return levantamento;
     }
 
-    public Levantamento calcularAreaEPerimetro(Levantamento levantamento) {
+    public void calcularAreaEPerimetro(Levantamento levantamento) {
         calcularAreaDeterminantes(levantamento);
         calcularPerimetro(levantamento);
 
-        return levantamento;
     }
 
-    public Levantamento calcularErroAngular(Levantamento levantamento) {
-        int nPontos = pontoRepository.countByLevantamentoId(levantamento.getId());
+    public void calcularErroAngular(Levantamento levantamento) {
+        int nPontos = 0;
+        List<Ponto> pontos = new ArrayList<>();
+
+        if (levantamento.getTipo().equals("Caminhamento")) {
+            pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+            nPontos = pontos.size();
+        } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
+            pontos = pontoRepository.findEstacoesByLevantamentoId(levantamento.getId());
+            nPontos = pontos.size();
+        }
+
+
         double soma = 0.0;
 
-        List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
         for (Ponto ponto : pontos) {
             soma += ponto.getAnguloLido();
         }
@@ -105,11 +112,17 @@ public class CalculoService {
 
         levantamento.setErroAngular(erroAngular);
 
-        return levantamento;
     }
 
-    public List<Ponto> calcularCaminhamento(Levantamento levantamento) {
-        List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+    public void calcularCaminhamento(Levantamento levantamento) {
+
+        List<Ponto> pontos = new ArrayList<>();
+
+        if (levantamento.getTipo().equals("Caminhamento")) {
+            pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+        }else if(levantamento.getTipo().equals("Caminhamento Irradiado")){
+            pontos = pontoRepository.findEstacoesByLevantamentoId(levantamento.getId());
+        }
         double correcao = -levantamento.getErroAngular() / pontos.size();
         double perimetro = 0.0;
         double projX = 0;
@@ -124,6 +137,13 @@ public class CalculoService {
 
                 ponto.setAzimute(az);
 
+            } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
+                double az = ponto.getAzimuteRe() + ponto.getAnguloHz();
+
+                if (az > 360)
+                    az -= 360;
+
+                ponto.setAzimute(az);
             }
 
             calcularProjecoes(ponto);
@@ -135,11 +155,10 @@ public class CalculoService {
 
         levantamento.setErroLinearAbs(Math.sqrt(projX * projX + projY * projY));
         levantamento.setPerimetro(perimetro);
-        pontos = calcularCoordenadas(pontos, levantamento, projX, projY);
-        return pontos;
+        calcularCoordenadas(pontos, levantamento, projX, projY);
     }
 
-    public List<Ponto> calcularCoordenadas(List<Ponto> pontos, Levantamento levantamento, double projX, double projY) {
+    public void calcularCoordenadas(List<Ponto> pontos, Levantamento levantamento, double projX, double projY) {
         double compensacaoX = projX / levantamento.getPerimetro();
         double compensacaoY = projY / levantamento.getPerimetro();
 
@@ -157,19 +176,18 @@ public class CalculoService {
         }
 
         for (int i = 0; i < pontos.size(); i++) {
-            if(i == pontos.size() - 1){
+            if (i == pontos.size() - 1) {
                 pontos.get(i).setYx(pontos.get(i).getCoordY() * pontos.get(0).getCoordX());
                 pontos.get(i).setXy(pontos.get(i).getCoordX() * pontos.get(0).getCoordY());
-            }else{
+            } else {
                 pontos.get(i).setYx(pontos.get(i).getCoordY() * pontos.get(i + 1).getCoordX());
                 pontos.get(i).setXy(pontos.get(i).getCoordX() * pontos.get(i + 1).getCoordY());
             }
         }
 
-        return pontos;
     }
 
-    public Levantamento calcularArea(Levantamento levantamento) {
+    public void calcularArea(Levantamento levantamento) {
         List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
         double somaXY = 0;
         double somaYX = 0;
@@ -180,7 +198,21 @@ public class CalculoService {
         }
 
         levantamento.setArea((somaXY - somaYX) / 2);
-        return levantamento;
+    }
+
+    public void calcularPontosIrradiados(Levantamento levantamento) {
+        List<Ponto> pontos = pontoRepository.findPontosByLevantamentoId(levantamento.getId());
+        for (Ponto ponto : pontos) {
+            ponto.setAnguloHz(ponto.getAnguloLido());
+            double azimute = ponto.getReferencia().getAzimute() + ponto.getAnguloHz() + 180;
+            if(azimute > 360){
+                azimute -= 360;
+            }
+            ponto.setAzimute(azimute);
+            calcularProjecoes(ponto);
+            ponto.setCoordX(ponto.getProjX() + ponto.getReferencia().getCoordX());
+            ponto.setCoordY(ponto.getProjY() + ponto.getReferencia().getCoordY());
+        }
     }
 
 

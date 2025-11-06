@@ -48,6 +48,13 @@ public class PontoService {
             }else{
                 ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
             }
+        }else if(ponto.getLevantamento().getTipo().equals("Caminhamento Irradiado")){
+            if(pontoDTO.getReferencia() == null) {
+                ponto.setAzimuteRe(pontoDTO.getAzimuteRe().toDecimal());
+            }else{
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+                ponto.setReferencia(aux);
+            }
         }
 
 
