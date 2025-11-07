@@ -250,11 +250,9 @@ public class CalculoService {
         for (Ponto ponto : pontos) {
             ponto.setAnguloHz(ponto.getAnguloLido());
             double azimute = ponto.getReferencia().getAzimute() + ponto.getAnguloHz() + 180;
-            System.out.println("Ponto: " + ponto.getNome() + " Azimute: " + azimute);
             while (azimute > 360) {
                 azimute -= 360;
             }
-            System.out.println("Ponto: " + ponto.getNome() + " Azimute: " + azimute);
             ponto.setAzimute(azimute);
             calcularProjecoes(ponto);
             ponto.setCoordX(ponto.getProjX() + ponto.getReferencia().getCoordX());
