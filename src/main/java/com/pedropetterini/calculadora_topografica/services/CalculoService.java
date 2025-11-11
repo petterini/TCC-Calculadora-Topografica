@@ -32,7 +32,7 @@ public class CalculoService {
         if (!pontoRepository.existsByLevantamentoId(levantamento.getId())) {
             throw new LevantamentoNotFoundException("Levantamento não encontrado para o ID: " + levantamento.getId());
         }
-        List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+        List<Ponto> pontos = pontoRepository.findByLevantamentoIdOrderByNomeAsc(levantamento.getId());
         double det1 = 0.0;
         double det2 = 0.0;
 
@@ -103,7 +103,7 @@ public class CalculoService {
             throw new LevantamentoNotFoundException("Levantamento não encontrado para o ID: " + levantamento.getId());
         }
 
-        List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+        List<Ponto> pontos = pontoRepository.findByLevantamentoIdOrderByNomeAsc(levantamento.getId());
 
 
         if (pontos.size() < 2) {
@@ -139,7 +139,7 @@ public class CalculoService {
         List<Ponto> pontos = new ArrayList<>();
 
         if (levantamento.getTipo().equals("Caminhamento")) {
-            pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+            pontos = pontoRepository.findByLevantamentoIdOrderByNomeAsc(levantamento.getId());
             nPontos = pontos.size();
         } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
             pontos = pontoRepository.findEstacoesByLevantamentoId(levantamento.getId());
@@ -164,7 +164,7 @@ public class CalculoService {
         List<Ponto> pontos = new ArrayList<>();
 
         if (levantamento.getTipo().equals("Caminhamento")) {
-            pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+            pontos = pontoRepository.findByLevantamentoIdOrderByNomeAsc(levantamento.getId());
         } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
             pontos = pontoRepository.findEstacoesByLevantamentoId(levantamento.getId());
         }
@@ -233,7 +233,7 @@ public class CalculoService {
     }
 
     public void calcularArea(Levantamento levantamento) {
-        List<Ponto> pontos = pontoRepository.findByLevantamentoId(levantamento.getId());
+        List<Ponto> pontos = pontoRepository.findByLevantamentoIdOrderByNomeAsc(levantamento.getId());
         double somaXY = 0;
         double somaYX = 0;
 

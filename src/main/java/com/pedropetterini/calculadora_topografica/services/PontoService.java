@@ -82,7 +82,7 @@ public class PontoService {
 
     public List<PontoResponseDTO> listarPontosPorLevantamento(UUID idLevantamento) {
         if(pontoRepository.existsByLevantamentoId(idLevantamento)) {
-            List<Ponto> pontos = pontoRepository.findByLevantamentoId(idLevantamento);
+            List<Ponto> pontos = pontoRepository.findByLevantamentoIdOrderByNomeAsc(idLevantamento);
             return PontoResponseDTO.toDto(pontos);
         }
         throw new PontoNotFoundException("Pontos não encontrados com o levantamento ID: " + idLevantamento);

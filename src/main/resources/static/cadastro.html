@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro - Sistema de Levantamentos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white text-center">
+                    <h4 class="mb-0">📝 Cadastro</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form id="cadastroForm">
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome Completo</label>
+                            <input type="text" class="form-control" id="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="senha" minlength="6" required>
+                            <div class="form-text">Mínimo 6 caracteres</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmarSenha" class="form-label">Confirmar Senha</label>
+                            <input type="password" class="form-control" id="confirmarSenha" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Cadastrar</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="login.html" class="text-decoration-none">Já tem conta? Faça login</a>
+                    </div>
+                    <div id="mensagem" class="alert mt-3 d-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+        const confirmarSenha = document.getElementById('confirmarSenha').value;
+        const mensagem = document.getElementById('mensagem');
+
+        // Validação básica
+        if (senha !== confirmarSenha) {
+            mensagem.className = 'alert alert-danger mt-3';
+            mensagem.textContent = 'As senhas não coincidem!';
+            mensagem.classList.remove('d-none');
+            return;
+        }
+
+        if (senha.length < 6) {
+            mensagem.className = 'alert alert-danger mt-3';
+            mensagem.textContent = 'A senha deve ter pelo menos 6 caracteres!';
+            mensagem.classList.remove('d-none');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/auth/cadastro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nome, email, senha })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                mensagem.className = 'alert alert-success mt-3';
+                mensagem.textContent = 'Cadastro realizado com sucesso! Redirecionando...';
+                mensagem.classList.remove('d-none');
+
+                // Redirecionar para login após 2 segundos
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                throw new Error(data.message || 'Erro no cadastro');
+            }
+        } catch (error) {
+            mensagem.className = 'alert alert-danger mt-3';
+            mensagem.textContent = error.message;
+            mensagem.classList.remove('d-none');
+        }
+    });
+</script>
+</body>
+</html>

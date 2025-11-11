@@ -34,15 +34,15 @@ public class LevantamentoService {
         levantamento.setUsuario(user);
         levantamento.setData_criacao(LocalDate.now());
 
-        return  LevantamentoResponseDTO.toDTO(levantamentoRepository.save(levantamento));
+        return LevantamentoResponseDTO.toDTO(levantamentoRepository.save(levantamento));
     }
 
-    public Levantamento getLevantamentoById(UUID id) {
-        if (levantamentoRepository.existsById(id)) {
-            return levantamentoRepository.findById(id).get();
-        } else {
-            throw new LevantamentoNotFoundException("Levantamento não encontrado");
-        }
+    public LevantamentoResponseDTO getLevantamentoById(UUID id) {
+        Levantamento lev = levantamentoRepository.findById(id).orElseThrow(() ->
+                new LevantamentoNotFoundException("Levantamento não encontrado."));
+
+        return LevantamentoResponseDTO.toDTO(lev);
+
     }
 
     public List<LevantamentoResponseDTO> getLevantamentoByUser(UUID id) {
@@ -108,7 +108,7 @@ public class LevantamentoService {
     }
 
     public void deletarLevantamento(UUID idLevantamento) {
-        if(levantamentoRepository.existsById(idLevantamento)) {
+        if (levantamentoRepository.existsById(idLevantamento)) {
             levantamentoRepository.deleteById(idLevantamento);
         }
         throw new LevantamentoNotFoundException("Levantamento não encontrado.");

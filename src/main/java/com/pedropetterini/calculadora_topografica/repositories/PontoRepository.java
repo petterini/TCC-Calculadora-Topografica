@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PontoRepository extends JpaRepository<Ponto, UUID> {
-    List<Ponto> findByLevantamentoId(UUID idLevantamento);
+    List<Ponto> findByLevantamentoIdOrderByNomeAsc(UUID idLevantamento);
 
     boolean existsByLevantamentoId(UUID idLevantamento);
 
