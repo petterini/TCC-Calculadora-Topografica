@@ -2,6 +2,7 @@ package com.pedropetterini.calculadora_topografica.services;
 
 import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.PontoResponseDTO;
+import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
 import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Ponto;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
@@ -22,7 +23,8 @@ public class PontoService {
 
     public PontoResponseDTO salvarPonto(PontoDTO pontoDTO) {
         Ponto ponto = new Ponto();
-        ponto.setLevantamento(levantamentoRepository.findById(pontoDTO.getLevantamentoId()).orElseThrow());
+        ponto.setLevantamento(levantamentoRepository.findById(pontoDTO.getLevantamentoId()).orElseThrow(() ->
+                new LevantamentoNotFoundException("Levantamento não encontrado.")));
         ponto.setEstacao(pontoDTO.getEstacao());
         ponto.setNome(pontoDTO.getNome());
         ponto.setDistancia(pontoDTO.getDistancia());
@@ -30,7 +32,8 @@ public class PontoService {
 
         if(ponto.getLevantamento().getTipo().equals("Irradiação")){
             if (pontoDTO.getReferencia() != null) {
-                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow(() ->
+                        new PontoNotFoundException("Referência não encontrada."));
                 ponto.setReferencia(aux);
                 ponto.setAnguloHz(ponto.getAnguloLido() - aux.getAnguloLido());
                 ponto.setAzimute(aux.getAzimute() + ponto.getAnguloHz());
@@ -43,7 +46,8 @@ public class PontoService {
             calculoService.calcularCoordenadas(ponto, ponto.getLevantamento());
         }else if(ponto.getLevantamento().getTipo().equals("Caminhamento")){
             if(pontoDTO.getReferencia() != null) {
-                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow(() ->
+                        new PontoNotFoundException("Referência não encontrada."));
                 ponto.setReferencia(aux);
             }else{
                 ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
@@ -56,7 +60,8 @@ public class PontoService {
                     ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
                 }
             }else{
-                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow();
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId()).orElseThrow(() ->
+                        new PontoNotFoundException("Referência não encontrada."));
                 ponto.setReferencia(aux);
             }
         }
@@ -91,7 +96,7 @@ public class PontoService {
         throw new PontoNotFoundException("Ponto não encontrado com o ID: " + id);
     }
 
-    public void removerPonto(UUID id) {
+    public void deletarPonto(UUID id) {
         if(pontoRepository.existsById(id)) {
             pontoRepository.deleteById(id);
         }else{
@@ -99,16 +104,65 @@ public class PontoService {
         }
     }
 
+    public void deletarPorIdLevantamento(UUID idLevantamento) {
+        pontoRepository.deleteByLevantamentoId(idLevantamento);
+    }
 
+    public PontoResponseDTO atualizarPonto(PontoDTO pontoDTO) {
+        Ponto ponto = pontoRepository.findById(pontoDTO.getId())
+                .orElseThrow(() -> new PontoNotFoundException("Ponto não encontrado."));
 
-//    public Ponto alterarPonto(UUID id, PontoDTO ponto) {
-//        if(pontoRepository.existsById(id)) {
-//            Ponto oldPonto = pontoRepository.findById(id).get();
-//            oldPonto.setAngulo(ponto.getAngulo());
-//            oldPonto.setDistancia(ponto.getDistancia());
-//            oldPonto.setNome(ponto.getNome());
-//        }
-//        return null;
-//    }
+        ponto.setEstacao(pontoDTO.getEstacao());
+        ponto.setNome(pontoDTO.getNome());
+        ponto.setDistancia(pontoDTO.getDistancia());
+        ponto.setAnguloLido(pontoDTO.getAngulo().toDecimal());
 
+        var levantamento = levantamentoRepository.findById(pontoDTO.getLevantamentoId())
+                .orElseThrow(() -> new LevantamentoNotFoundException("Levantamento não encontrado."));
+        ponto.setLevantamento(levantamento);
+
+        if (levantamento.getTipo().equals("Irradiação")) {
+            if (pontoDTO.getReferencia() != null) {
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId())
+                        .orElseThrow(() -> new PontoNotFoundException("Referência não encontrada."));
+                ponto.setReferencia(aux);
+                ponto.setAnguloHz(ponto.getAnguloLido() - aux.getAnguloLido());
+                ponto.setAzimute(aux.getAzimute() + ponto.getAnguloHz());
+            } else {
+                ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
+                ponto.setAnguloHz(0);
+                ponto.setReferencia(null);
+            }
+
+            calculoService.calcularProjecoes(ponto);
+            calculoService.calcularCoordenadas(ponto, levantamento);
+
+        } else if (levantamento.getTipo().equals("Caminhamento")) {
+            if (pontoDTO.getReferencia() != null) {
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId())
+                        .orElseThrow(() -> new PontoNotFoundException("Referência não encontrada."));
+                ponto.setReferencia(aux);
+            } else {
+                ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
+                ponto.setReferencia(null);
+            }
+
+        } else if (levantamento.getTipo().equals("Caminhamento Irradiado")) {
+            if (pontoDTO.getReferencia() == null) {
+                if (pontoDTO.getAzimuteRe() != null) {
+                    ponto.setAzimuteRe(pontoDTO.getAzimuteRe().toDecimal());
+                } else {
+                    ponto.setAzimute(pontoDTO.getAzimute().toDecimal());
+                }
+                ponto.setReferencia(null);
+            } else {
+                var aux = pontoRepository.findByNomeAndLevantamentoId(pontoDTO.getReferencia(), pontoDTO.getLevantamentoId())
+                        .orElseThrow(() -> new PontoNotFoundException("Referência não encontrada."));
+                ponto.setReferencia(aux);
+            }
+        }
+
+        Ponto pontoAtualizado = pontoRepository.save(ponto);
+        return PontoResponseDTO.toDto(pontoAtualizado);
+    }
 }

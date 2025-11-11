@@ -18,4 +18,6 @@ public class UsuarioDTO {
 
     @NotBlank
     private String senha;
+
+    private String status;
 }

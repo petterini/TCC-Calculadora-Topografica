@@ -1,6 +1,7 @@
 package com.pedropetterini.calculadora_topografica.dtos.mapper;
 
 import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
+import com.pedropetterini.calculadora_topografica.dtos.response.LevantamentoResponseDTO;
 import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

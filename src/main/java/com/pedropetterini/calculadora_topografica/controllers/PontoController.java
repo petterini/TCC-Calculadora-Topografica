@@ -1,8 +1,11 @@
 package com.pedropetterini.calculadora_topografica.controllers;
 
+import com.pedropetterini.calculadora_topografica.dtos.ErroRespostaDTO;
 import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.PontoResponseDTO;
+import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
 import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundException;
+import com.pedropetterini.calculadora_topografica.services.LevantamentoService;
 import com.pedropetterini.calculadora_topografica.services.PontoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import java.util.UUID;
 @RequestMapping("ponto")
 public class PontoController {
     private final PontoService pontoService;
+    private final LevantamentoService levantamentoService;
 
     @PostMapping
     public ResponseEntity<Object> salvarPonto(@Valid @RequestBody PontoDTO pontoDTO) {
@@ -47,6 +51,21 @@ public class PontoController {
             return ResponseEntity.status(HttpStatus.OK).body(pontos);
         }catch (PontoNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> atualizarPonto(@RequestBody PontoDTO pontoDTO) {
+        try{
+            var ponto = pontoService.atualizarPonto(pontoDTO);
+            levantamentoService.calcular(pontoDTO.getLevantamentoId());
+            return ResponseEntity.status(HttpStatus.OK).body(ponto);
+        }catch (PontoNotFoundException e){
+            var erroDTO = ErroRespostaDTO.pontoNotFound(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }catch (LevantamentoNotFoundException e){
+            var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }
 }

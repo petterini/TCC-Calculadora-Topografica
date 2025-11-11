@@ -10,6 +10,8 @@ import java.util.UUID;
 @Data
 public class PontoDTO {
 
+    private UUID id;
+
     private UUID levantamentoId;
 
     private String estacao;

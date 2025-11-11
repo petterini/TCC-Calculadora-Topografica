@@ -17,4 +17,16 @@ public record ErroRespostaDTO(int status, String message, List<ErroCampoDTO> err
     public static ErroRespostaDTO levantamentoNotFound(String message) {
         return new ErroRespostaDTO(HttpStatus.NOT_FOUND.value(), message, List.of());
     }
+
+    public static ErroRespostaDTO usuarioDuplicado(String message) {
+        return new ErroRespostaDTO(HttpStatus.CONFLICT.value(), message, List.of());
+    }
+
+    public static ErroRespostaDTO usuarioNotFound(String message) {
+        return new ErroRespostaDTO(HttpStatus.NOT_FOUND.value(), message, List.of());
+    }
+
+    public static ErroRespostaDTO pontoNotFound(String message) {
+        return new ErroRespostaDTO(HttpStatus.NOT_FOUND.value(), message, List.of());
+    }
 }

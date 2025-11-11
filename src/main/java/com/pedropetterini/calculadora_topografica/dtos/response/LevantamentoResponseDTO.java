@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 public class LevantamentoResponseDTO {
@@ -40,7 +42,7 @@ public class LevantamentoResponseDTO {
         LevantamentoResponseDTO responseDTO = new LevantamentoResponseDTO();
         responseDTO.setId(levantamento.getId());
         responseDTO.setNome(levantamento.getNome());
-        responseDTO.setIdUsuario(levantamento.getIdUsuario());
+        responseDTO.setIdUsuario(levantamento.getUsuario().getId());
         responseDTO.setTipo(levantamento.getTipo());
         responseDTO.setArea(levantamento.getArea());
         responseDTO.setPerimetro(levantamento.getPerimetro());
@@ -59,5 +61,11 @@ public class LevantamentoResponseDTO {
         }
 
         return responseDTO;
+    }
+
+    public static List<LevantamentoResponseDTO> toDTOs(List<Levantamento> levantamentos) {
+        return levantamentos.stream()
+                .map(LevantamentoResponseDTO::toDTO)
+                .collect(Collectors.toList());
     }
 }

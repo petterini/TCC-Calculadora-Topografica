@@ -3,10 +3,10 @@ package com.pedropetterini.calculadora_topografica.controllers;
 import com.pedropetterini.calculadora_topografica.dtos.ErroRespostaDTO;
 import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.LevantamentoResponseDTO;
-import com.pedropetterini.calculadora_topografica.exceptions.DuplicatedLevantamentoException;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
-import com.pedropetterini.calculadora_topografica.models.Levantamento;
+import com.pedropetterini.calculadora_topografica.exceptions.UserNotFoundException;
 import com.pedropetterini.calculadora_topografica.services.LevantamentoService;
+import com.pedropetterini.calculadora_topografica.services.PontoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,21 +21,23 @@ import java.util.UUID;
 @RequestMapping("levantamentos")
 public class LevantamentoController {
     private final LevantamentoService levantamentoService;
+    private final PontoService pontoService;
 
     @PostMapping()
     public ResponseEntity<Object> cadastrarLevantamento(@Valid @RequestBody LevantamentoDTO levantamentoDTO) {
         try {
-            Levantamento lev = levantamentoService.cadastrar(levantamentoDTO);
+            var lev = levantamentoService.cadastrar(levantamentoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(lev);
-        } catch (DuplicatedLevantamentoException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (UserNotFoundException e){
+            var erroDTO = ErroRespostaDTO.usuarioNotFound(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }
 
     @GetMapping("/getLevantamentoById/{id}")
     public ResponseEntity<Object> getLevantamentoById(@PathVariable UUID id) {
         try{
-            Levantamento levantamento = levantamentoService.getLevantamentoById(id);
+            var levantamento = levantamentoService.getLevantamentoById(id);
             return ResponseEntity.status(HttpStatus.OK).body(levantamento);
         }catch (LevantamentoNotFoundException e){
             var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
@@ -46,7 +48,7 @@ public class LevantamentoController {
     @GetMapping("/getAllLevantamentosByUser/{id}")
     public ResponseEntity<Object> getAllLevantamentosByUser(@PathVariable UUID id) {
         try {
-            List<Levantamento> levantamentos = levantamentoService.getLevantamentoByUser(id);
+            List<LevantamentoResponseDTO> levantamentos = levantamentoService.getLevantamentoByUser(id);
             return ResponseEntity.ok(levantamentos);
         } catch (LevantamentoNotFoundException e) {
             var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
@@ -57,7 +59,7 @@ public class LevantamentoController {
     @GetMapping("/getAllLevantamentos")
     public ResponseEntity<Object> getAllLevantamentos() {
         try {
-            List<Levantamento> levantamentos = levantamentoService.getAllLevantamentos();
+            List<LevantamentoResponseDTO> levantamentos = levantamentoService.getAllLevantamentos();
             return ResponseEntity.ok(levantamentos);
         }catch (LevantamentoNotFoundException e){
             var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
@@ -66,7 +68,7 @@ public class LevantamentoController {
     }
 
     @PostMapping("/calcular/{idLevantamento}")
-    public ResponseEntity<Object> calcularArea(@PathVariable UUID idLevantamento) {
+    public ResponseEntity<Object> calcular(@PathVariable UUID idLevantamento) {
         try{
             LevantamentoResponseDTO response = levantamentoService.calcular(idLevantamento);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -76,10 +78,10 @@ public class LevantamentoController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> alterarLevantamento(@PathVariable UUID id, @Valid @RequestBody LevantamentoDTO levantamentoDTO) {
+    @PutMapping
+    public ResponseEntity<Object> alterarLevantamento(@RequestBody LevantamentoDTO levantamentoDTO) {
         try{
-            var levantamento = levantamentoService.alterarLevantamento(id, levantamentoDTO);
+            var levantamento = levantamentoService.atualizarLevantamento(levantamentoDTO);
             return ResponseEntity.status(HttpStatus.OK).body(levantamento);
         }catch (LevantamentoNotFoundException e){
             var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
@@ -95,6 +97,18 @@ public class LevantamentoController {
         }catch (LevantamentoNotFoundException e){
             var errorDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
             return ResponseEntity.status(errorDTO.status()).body(errorDTO);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> deletarLevantamento(@PathVariable UUID idLevantamento) {
+        try {
+            pontoService.deletarPorIdLevantamento(idLevantamento);
+            levantamentoService.deletarLevantamento(idLevantamento);
+            return ResponseEntity.status(HttpStatus.OK).body("Levantamento deletado com sucesso");
+        } catch (LevantamentoNotFoundException e){
+            var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }
 

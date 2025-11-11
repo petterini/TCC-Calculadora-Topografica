@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface LevantamentoRepository extends JpaRepository<Levantamento, UUID> {
-    List<Levantamento> getLevantamentoByIdUsuario(@NotNull UUID idUsuario);
+    List<Levantamento> findLevantamentoByUsuarioId(@NotNull UUID idUsuario);
 
     Levantamento getLevantamentoById(UUID id);
 }

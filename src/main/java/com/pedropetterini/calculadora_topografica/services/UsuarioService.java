@@ -7,6 +7,7 @@ import com.pedropetterini.calculadora_topografica.exceptions.UserNotFoundExcepti
 import com.pedropetterini.calculadora_topografica.models.Usuario;
 import com.pedropetterini.calculadora_topografica.repositories.UsuarioRepository;
 import com.pedropetterini.calculadora_topografica.validators.UsuarioValidator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class UsuarioService {
 
         Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
         usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+        usuario.setStatus("Ativo");
 
         usuario = usuarioRepository.save(usuario);
 
@@ -35,6 +37,7 @@ public class UsuarioService {
         usuarioResponseDTO.setId(usuario.getId());
         usuarioResponseDTO.setEmail(usuario.getEmail());
         usuarioResponseDTO.setNome(usuario.getNome());
+        usuarioResponseDTO.setStatus(usuario.getStatus());
 
         return usuarioResponseDTO;
     }
@@ -74,5 +77,46 @@ public class UsuarioService {
         return userDTO;
     }
 
+    public UsuarioResponseDTO atualizarUsuario(UsuarioDTO usuarioDTO) {
+        if (usuarioRepository.existsById(usuarioDTO.getId())) {
+            usuarioValidator.validate(usuarioDTO);
 
+            Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
+            usuario.setStatus("Ativo");
+            usuario = usuarioRepository.save(usuario);
+
+            UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
+            usuarioResponseDTO.setId(usuario.getId());
+            usuarioResponseDTO.setEmail(usuario.getEmail());
+            usuarioResponseDTO.setNome(usuario.getNome());
+            usuarioResponseDTO.setStatus(usuario.getStatus());
+
+            return usuarioResponseDTO;
+        }
+
+        throw new UserNotFoundException("Usuário não encontrado.");
+    }
+
+    public UsuarioResponseDTO deletarUsuario(@Valid UsuarioDTO usuarioDTO) {
+        if (usuarioRepository.existsById(usuarioDTO.getId())) {
+            Usuario usuario = usuarioRepository.getById(usuarioDTO.getId());
+
+            if (usuario.getStatus().equals("Inativo")) {
+                throw new UserNotFoundException("Usuário não encontrado.");
+            }
+
+            usuario.setStatus("Inativo");
+            usuario = usuarioRepository.save(usuario);
+
+            UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
+            usuarioResponseDTO.setId(usuario.getId());
+            usuarioResponseDTO.setEmail(usuario.getEmail());
+            usuarioResponseDTO.setNome(usuario.getNome());
+            usuarioResponseDTO.setStatus("Inativo");
+
+            return usuarioResponseDTO;
+        }
+
+        throw new UserNotFoundException("Usuário não encontrado.");
+    }
 }

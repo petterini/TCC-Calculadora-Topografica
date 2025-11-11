@@ -21,9 +21,10 @@ public class Levantamento {
     @NotBlank
     private String nome;
 
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
     @NotNull
-    @Column(name = "idusuario")
-    private UUID idUsuario;
+    private Usuario usuario;
 
     @NotNull
     private String tipo;
