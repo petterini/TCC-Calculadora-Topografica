@@ -10,7 +10,7 @@ public class UsuarioDTO {
 
     private UUID id;
 
-
+    @NotBlank
     private String nome;
 
     @NotBlank

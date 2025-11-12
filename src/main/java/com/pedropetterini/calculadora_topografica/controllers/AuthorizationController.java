@@ -1,9 +1,9 @@
 package com.pedropetterini.calculadora_topografica.controllers;
 
 import com.pedropetterini.calculadora_topografica.configs.TokenService;
-import com.pedropetterini.calculadora_topografica.dtos.AuthenticationDTO;
-import com.pedropetterini.calculadora_topografica.dtos.CadastroDTO;
-import com.pedropetterini.calculadora_topografica.dtos.LoginResponseDTO;
+import com.pedropetterini.calculadora_topografica.dtos.autentication.AuthenticationDTO;
+import com.pedropetterini.calculadora_topografica.dtos.autentication.CadastroDTO;
+import com.pedropetterini.calculadora_topografica.dtos.autentication.LoginResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.UserDuplicatedException;
 import com.pedropetterini.calculadora_topografica.models.Usuario;
 import com.pedropetterini.calculadora_topografica.repositories.UsuarioRepository;
@@ -14,14 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AuthorizationController {
 
     private final AuthenticationManager authenticationManager;

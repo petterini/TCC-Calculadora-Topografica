@@ -1,20 +1,17 @@
 package com.pedropetterini.calculadora_topografica.controllers;
 
-import com.pedropetterini.calculadora_topografica.dtos.ErroRespostaDTO;
+import com.pedropetterini.calculadora_topografica.dtos.erro.ErroRespostaDTO;
 import com.pedropetterini.calculadora_topografica.dtos.UsuarioDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.UserDuplicatedException;
 import com.pedropetterini.calculadora_topografica.exceptions.UserNotFoundException;
-import com.pedropetterini.calculadora_topografica.models.Usuario;
 import com.pedropetterini.calculadora_topografica.services.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.http.HttpResponse;
 import java.util.UUID;
 
 @Controller

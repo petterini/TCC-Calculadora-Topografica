@@ -13,4 +13,8 @@ public record ErrorResponse(int status, String message, List<ErrorField> errors)
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), message, List.of());
     }
 
+    public static ErrorResponse userNotLoggedResponse(String message) {
+        return new ErrorResponse(HttpStatus.UNAUTHORIZED.value(), message, List.of());
+    }
+
 }

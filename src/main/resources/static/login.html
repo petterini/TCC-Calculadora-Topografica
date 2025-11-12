@@ -6,6 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
+
 <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
         <div class="col-md-6 col-lg-4">
@@ -20,8 +21,8 @@
                             <input type="email" class="form-control" id="email" required>
                         </div>
                         <div class="mb-3">
-                            <label for="senha" class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="senha" required>
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Entrar</button>
                     </form>
@@ -36,44 +37,47 @@
 </div>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const form = document.getElementById('loginForm');
+    const msg = document.getElementById('mensagem');
 
-        const email = document.getElementById('email').value;
-        const senha = document.getElementById('senha').value;
-        const mensagem = document.getElementById('mensagem');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        msg.classList.add('d-none');
+
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value.trim();
 
         try {
-            const response = await fetch('/api/auth/login', {
+            const res = await fetch('http://localhost:8080/auth/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, senha })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                // Login bem-sucedido
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('usuario', JSON.stringify(data.usuario));
-
-                mensagem.className = 'alert alert-success mt-3';
-                mensagem.textContent = 'Login realizado com sucesso!';
-                mensagem.classList.remove('d-none');
-
-                // Redirecionar após 1 segundo
-                setTimeout(() => {
-                    window.location.href = 'levantamento.html';
-                }, 1000);
-            } else {
-                throw new Error(data.message || 'Erro no login');
+            if (!res.ok) {
+                throw new Error('Email ou senha inválidos!');
             }
-        } catch (error) {
-            mensagem.className = 'alert alert-danger mt-3';
-            mensagem.textContent = error.message;
-            mensagem.classList.remove('d-none');
+
+            const data = await res.json();
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userEmail', email);
+
+            msg.className = 'alert alert-success mt-3';
+            msg.textContent = 'Login realizado com sucesso!';
+            msg.classList.remove('d-none');
+
+            setTimeout(() => window.location.href = 'dashboard.html', 1000);
+        } catch (err) {
+            msg.className = 'alert alert-danger mt-3';
+            msg.textContent = err.message;
+            msg.classList.remove('d-none');
+        }
+    });
+
+    // Se já estiver logado, redireciona
+    window.addEventListener('load', () => {
+        if (localStorage.getItem('token')) {
+            window.location.href = 'dashboard.html';
         }
     });
 </script>

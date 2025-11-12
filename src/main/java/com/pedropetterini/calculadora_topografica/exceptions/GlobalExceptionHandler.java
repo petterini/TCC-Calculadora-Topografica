@@ -1,6 +1,7 @@
 package com.pedropetterini.calculadora_topografica.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,5 +20,10 @@ public class GlobalExceptionHandler {
         List<FieldError> fieldErrors = ex.getFieldErrors();
         List<ErrorField> errorFields = fieldErrors.stream().map(fe -> new ErrorField(fe.getField(), fe.getDefaultMessage())).collect(Collectors.toList());
         return new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation error", errorFields);
+    }
+
+    @ExceptionHandler(UserDuplicatedException.class)
+    public ResponseEntity<Object> handleUserDuplicated(UserDuplicatedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

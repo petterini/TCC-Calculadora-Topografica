@@ -1,6 +1,6 @@
 package com.pedropetterini.calculadora_topografica.controllers;
 
-import com.pedropetterini.calculadora_topografica.dtos.ErroRespostaDTO;
+import com.pedropetterini.calculadora_topografica.dtos.erro.ErroRespostaDTO;
 import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.PontoResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;

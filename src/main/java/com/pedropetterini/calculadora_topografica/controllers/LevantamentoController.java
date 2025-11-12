@@ -1,6 +1,6 @@
 package com.pedropetterini.calculadora_topografica.controllers;
 
-import com.pedropetterini.calculadora_topografica.dtos.ErroRespostaDTO;
+import com.pedropetterini.calculadora_topografica.dtos.erro.ErroRespostaDTO;
 import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.LevantamentoResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
@@ -45,10 +45,10 @@ public class LevantamentoController {
         }
     }
 
-    @GetMapping("/getAllLevantamentosByUser/{id}")
-    public ResponseEntity<Object> getAllLevantamentosByUser(@PathVariable UUID id) {
+    @GetMapping("/getAllLevantamentosByUser")
+    public ResponseEntity<Object> getAllLevantamentosByUser() {
         try {
-            List<LevantamentoResponseDTO> levantamentos = levantamentoService.getLevantamentoByUser(id);
+            List<LevantamentoResponseDTO> levantamentos = levantamentoService.getLevantamentoByUser();
             return ResponseEntity.ok(levantamentos);
         } catch (LevantamentoNotFoundException e) {
             var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());

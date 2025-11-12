@@ -14,9 +14,6 @@ public class LevantamentoDTO {
     @NotBlank
     private String nome;
 
-    @NotNull
-    private UUID idUsuario;
-
     @NotBlank
     private String tipo;
 

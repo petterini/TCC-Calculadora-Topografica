@@ -1,4 +1,4 @@
-package com.pedropetterini.calculadora_topografica.dtos;
+package com.pedropetterini.calculadora_topografica.dtos.erro;
 
 import org.springframework.http.HttpStatus;
 

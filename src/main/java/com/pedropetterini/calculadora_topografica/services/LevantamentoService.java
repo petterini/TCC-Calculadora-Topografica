@@ -1,5 +1,6 @@
 package com.pedropetterini.calculadora_topografica.services;
 
+import com.pedropetterini.calculadora_topografica.configs.TokenService;
 import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.mapper.LevantamentoMapper;
 import com.pedropetterini.calculadora_topografica.dtos.response.LevantamentoResponseDTO;
@@ -9,6 +10,7 @@ import com.pedropetterini.calculadora_topografica.models.Levantamento;
 import com.pedropetterini.calculadora_topografica.models.Usuario;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
 import com.pedropetterini.calculadora_topografica.repositories.UsuarioRepository;
+import com.pedropetterini.calculadora_topografica.utils.UsuarioLogadoUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +23,13 @@ import java.util.UUID;
 public class LevantamentoService {
 
     private final LevantamentoRepository levantamentoRepository;
-    private final UsuarioRepository usuarioRepository;
     private final CalculoService calculoService;
     private final LevantamentoMapper levantamentoMapper;
+    private final UsuarioLogadoUtil usuarioLogadoUtil;
 
     public LevantamentoResponseDTO cadastrar(LevantamentoDTO levantamentoDTO) {
 
-        Usuario user = usuarioRepository.findById(levantamentoDTO.getIdUsuario()).orElseThrow(() ->
-                new UserNotFoundException("Usuário não encontrado."));
+        Usuario user = usuarioLogadoUtil.getUsuarioLogado();
 
         Levantamento levantamento = levantamentoMapper.toEntity(levantamentoDTO);
         levantamento.setUsuario(user);
@@ -45,11 +46,13 @@ public class LevantamentoService {
 
     }
 
-    public List<LevantamentoResponseDTO> getLevantamentoByUser(UUID id) {
-        List<Levantamento> levantamentos = levantamentoRepository.findLevantamentoByUsuarioId(id);
+    public List<LevantamentoResponseDTO> getLevantamentoByUser() {
+        Usuario user = usuarioLogadoUtil.getUsuarioLogado();
+
+        List<Levantamento> levantamentos = levantamentoRepository.findLevantamentoByUsuarioId(user.getId());
 
         if (levantamentos.isEmpty()) {
-            throw new LevantamentoNotFoundException("Nenhum levantamento encontrado para o id " + id);
+            throw new LevantamentoNotFoundException("Nenhum levantamento encontrado para o id " + user.getId());
         }
 
         return LevantamentoResponseDTO.toDTOs(levantamentos);
