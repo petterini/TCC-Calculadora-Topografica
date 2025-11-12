@@ -46,36 +46,6 @@ public class UsuarioService {
         return usuarioRepository.findById(idUsuario).orElseThrow(() -> new UserNotFoundException("Usuário não encontrado para o id: " + idUsuario));
     }
 
-    public UsuarioResponseDTO login(UsuarioDTO usuarioDTO) {
-        String email = usuarioDTO.getEmail();
-        String senha = usuarioDTO.getSenha();
-
-        Usuario user = usuarioRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("Email ou senha incorretos."));
-
-        if (!passwordEncoder.matches(senha, user.getSenha())) {
-            throw new UserNotFoundException("Email ou senha incorretos.");
-        }
-
-        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
-        usuarioResponseDTO.setId(user.getId());
-        usuarioResponseDTO.setEmail(user.getEmail());
-        usuarioResponseDTO.setNome(user.getNome());
-
-        return usuarioResponseDTO;
-    }
-
-    public UsuarioResponseDTO buscarPorEmail(String email) {
-        Usuario user = usuarioRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("Usuario não encontrado para o email informado."));
-
-        UsuarioResponseDTO userDTO = new UsuarioResponseDTO();
-
-        userDTO.setId(user.getId());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setNome(user.getNome());
-
-        return userDTO;
-    }
 
     public UsuarioResponseDTO atualizarUsuario(UsuarioDTO usuarioDTO) {
         if (usuarioRepository.existsById(usuarioDTO.getId())) {

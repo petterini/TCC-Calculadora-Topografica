@@ -46,28 +46,6 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/buscarPorEmail")
-    public ResponseEntity<Object> buscarUsuarioPorEmail(@PathVariable String email) {
-        try{
-            var usuario = usuarioService.buscarPorEmail(email);
-            return ResponseEntity.status(HttpStatus.OK).body(usuario);
-        }catch (UserNotFoundException e){
-            var erroDTO = ErroRespostaDTO.usuarioNotFound(e.getMessage());
-            return ResponseEntity.status(erroDTO.status()).body(e.getMessage());
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<Object> login(@Valid @RequestBody UsuarioDTO usuarioDTO) {
-        try {
-            var usuario = usuarioService.login(usuarioDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(usuario);
-        }catch (UserNotFoundException e){
-            var erroDTO = ErroRespostaDTO.usuarioNotFound(e.getMessage());
-            return ResponseEntity.status(erroDTO.status()).body(e.getMessage());
-        }
-    }
-
     @PutMapping
     public ResponseEntity<Object> atualizarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
         try {

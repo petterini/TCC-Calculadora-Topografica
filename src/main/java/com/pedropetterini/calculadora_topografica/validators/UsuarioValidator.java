@@ -17,11 +17,11 @@ public class UsuarioValidator {
             throw new UserDuplicatedException("Email já cadastrado.");
         }
 
-        if(usuarioRepository.existsByEmail(usuario.getEmail()) && usuario.getId() != null){
-            Usuario user = usuarioRepository.findByEmail(usuario.getEmail()).get();
-            if(user.getId() != usuario.getId() && !user.getEmail().equals(usuario.getEmail())){
-                throw new UserDuplicatedException("Email já cadastrado.");
-            }
-        }
+//        if(usuarioRepository.existsByEmail(usuario.getEmail()) && usuario.getId() != null){
+//            Usuario user = usuarioRepository.findByEmail(usuario.getEmail()).get();
+//            if(user.getId() != usuario.getId() && !user.getEmail().equals(usuario.getEmail())){
+//                throw new UserDuplicatedException("Email já cadastrado.");
+//            }
+//        }
     }
 }
