@@ -6,7 +6,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-
 <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
         <div class="col-md-6 col-lg-4">
@@ -27,7 +26,7 @@
                         <button type="submit" class="btn btn-primary w-100">Entrar</button>
                     </form>
                     <div class="text-center mt-3">
-                        <a href="cadastro.html" class="text-decoration-none">Não tem conta? Cadastre-se</a>
+                        <a href="/cadastro" class="text-decoration-none">Não tem conta? Cadastre-se</a>
                     </div>
                     <div id="mensagem" class="alert mt-3 d-none"></div>
                 </div>
@@ -40,6 +39,15 @@
     const form = document.getElementById('loginForm');
     const msg = document.getElementById('mensagem');
 
+    // Verifica se já está logado ao carregar a página
+    window.addEventListener('load', () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Tenta acessar o dashboard com o token
+            checkAuthentication(token);
+        }
+    });
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         msg.classList.add('d-none');
@@ -48,7 +56,7 @@
         const password = document.getElementById('password').value.trim();
 
         try {
-            const res = await fetch('http://localhost:8080/auth/login', {
+            const res = await fetch('/auth/login', { // URL relativa
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -66,7 +74,10 @@
             msg.textContent = 'Login realizado com sucesso!';
             msg.classList.remove('d-none');
 
-            setTimeout(() => window.location.href = 'dashboard.html', 1000);
+            // Redireciona para o dashboard após login
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1000);
         } catch (err) {
             msg.className = 'alert alert-danger mt-3';
             msg.textContent = err.message;
@@ -74,12 +85,30 @@
         }
     });
 
-    // Se já estiver logado, redireciona
-    window.addEventListener('load', () => {
-        if (localStorage.getItem('token')) {
-            window.location.href = 'dashboard.html';
+    // Função para verificar se o token ainda é válido
+    async function checkAuthentication(token) {
+        try {
+            const response = await fetch('/dashboard', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                // Token válido, redireciona para dashboard
+                window.location.href = '/dashboard';
+            } else {
+                // Token inválido, remove do localStorage
+                localStorage.removeItem('token');
+                localStorage.removeItem('userEmail');
+            }
+        } catch (error) {
+            console.log('Erro na verificação de autenticação:', error);
+            localStorage.removeItem('token');
+            localStorage.removeItem('userEmail');
         }
-    });
+    }
 </script>
 </body>
 </html>
