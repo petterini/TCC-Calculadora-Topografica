@@ -5,6 +5,7 @@ import com.pedropetterini.calculadora_topografica.dtos.mapper.UsuarioMapper;
 import com.pedropetterini.calculadora_topografica.dtos.response.UsuarioResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.UserNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Usuario;
+import com.pedropetterini.calculadora_topografica.models.enums.UsuarioRole;
 import com.pedropetterini.calculadora_topografica.repositories.UsuarioRepository;
 import com.pedropetterini.calculadora_topografica.validators.UsuarioValidator;
 import jakarta.validation.Valid;
@@ -29,7 +30,8 @@ public class UsuarioService {
 
         Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
         usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
-        usuario.setStatus("Ativo");
+        usuario.setRole(UsuarioRole.USER);
+        usuario.setStatus("ATIVO");
 
         usuario = usuarioRepository.save(usuario);
 
@@ -52,7 +54,10 @@ public class UsuarioService {
             usuarioValidator.validate(usuarioDTO);
 
             Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
-            usuario.setStatus("Ativo");
+            usuario.setStatus("ATIVO");
+            usuario.setRole(UsuarioRole.USER);
+            usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+
             usuario = usuarioRepository.save(usuario);
 
             UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();

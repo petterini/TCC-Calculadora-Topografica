@@ -5,12 +5,14 @@ import com.pedropetterini.calculadora_topografica.dtos.LevantamentoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.LevantamentoResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
 import com.pedropetterini.calculadora_topografica.exceptions.UserNotFoundException;
+import com.pedropetterini.calculadora_topografica.models.Usuario;
 import com.pedropetterini.calculadora_topografica.services.LevantamentoService;
 import com.pedropetterini.calculadora_topografica.services.PontoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,8 @@ public class LevantamentoController {
     @PostMapping()
     public ResponseEntity<Object> cadastrarLevantamento(@Valid @RequestBody LevantamentoDTO levantamentoDTO) {
         try {
+            Usuario userLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            levantamentoDTO.setIdUsuario(userLogado.getId());
             var lev = levantamentoService.cadastrar(levantamentoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(lev);
         } catch (UserNotFoundException e){

@@ -20,4 +20,23 @@ public class GlobalExceptionHandler {
         List<ErrorField> errorFields = fieldErrors.stream().map(fe -> new ErrorField(fe.getField(), fe.getDefaultMessage())).collect(Collectors.toList());
         return new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation error", errorFields);
     }
+
+    @ExceptionHandler(UserDuplicatedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public SimpleErrorResponse handleUserDuplicated(UserDuplicatedException ex) {
+        return new SimpleErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage()
+        );
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public SimpleErrorResponse handleUserNotFound(UserNotFoundException ex) {
+        return new SimpleErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+    }
+
 }

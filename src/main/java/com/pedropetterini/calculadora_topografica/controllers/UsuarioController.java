@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,8 @@ public class UsuarioController {
     @PutMapping
     public ResponseEntity<Object> atualizarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
         try {
+            Usuario user = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            usuarioDTO.setId(user.getId());
             var usuario = usuarioService.atualizarUsuario(usuarioDTO);
             return ResponseEntity.status(HttpStatus.OK).body(usuario);
         }catch (UserNotFoundException e){
