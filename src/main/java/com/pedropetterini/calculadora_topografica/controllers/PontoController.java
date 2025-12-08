@@ -4,6 +4,7 @@ import com.pedropetterini.calculadora_topografica.dtos.ErroRespostaDTO;
 import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.PontoResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
+import com.pedropetterini.calculadora_topografica.exceptions.NotPossibleDeleteException;
 import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundException;
 import com.pedropetterini.calculadora_topografica.services.LevantamentoService;
 import com.pedropetterini.calculadora_topografica.services.PontoService;
@@ -65,6 +66,20 @@ public class PontoController {
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }catch (LevantamentoNotFoundException e){
             var erroDTO = ErroRespostaDTO.levantamentoNotFound(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }
+    }
+
+    @DeleteMapping("/idPonto")
+    public ResponseEntity<Object> deletarPonto(@PathVariable UUID idPonto) {
+        try {
+            pontoService.deletarPonto(idPonto);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (PontoNotFoundException e){
+            var erroDTO = ErroRespostaDTO.pontoNotFound(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
+        }catch (NotPossibleDeleteException e){
+            var erroDTO = ErroRespostaDTO.notPossibleDeletePonto(e.getMessage());
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }

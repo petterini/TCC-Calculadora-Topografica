@@ -27,4 +27,6 @@ public interface PontoRepository extends JpaRepository<Ponto, UUID> {
     List<Ponto> findAllByNomesAndLevantamento(@Param("nomes") List<String> nomes, @Param("levantamentoId") UUID levantamentoId);
 
     void deleteByLevantamentoId(UUID idLevantamento);
+
+    boolean existsByReferencia(Ponto referencia);
 }

@@ -3,6 +3,7 @@ package com.pedropetterini.calculadora_topografica.services;
 import com.pedropetterini.calculadora_topografica.dtos.PontoDTO;
 import com.pedropetterini.calculadora_topografica.dtos.response.PontoResponseDTO;
 import com.pedropetterini.calculadora_topografica.exceptions.LevantamentoNotFoundException;
+import com.pedropetterini.calculadora_topografica.exceptions.NotPossibleDeleteException;
 import com.pedropetterini.calculadora_topografica.exceptions.PontoNotFoundException;
 import com.pedropetterini.calculadora_topografica.models.Ponto;
 import com.pedropetterini.calculadora_topografica.repositories.LevantamentoRepository;
@@ -98,7 +99,12 @@ public class PontoService {
 
     public void deletarPonto(UUID id) {
         if(pontoRepository.existsById(id)) {
-            pontoRepository.deleteById(id);
+            var ponto = pontoRepository.findById(id).get();
+            if(!pontoRepository.existsByReferencia(ponto.getReferencia())){
+                pontoRepository.delete(ponto);
+            }else{
+                throw new NotPossibleDeleteException("Impossível deletar ponto pois outros o utilizam como referência.");
+            }
         }else{
             throw new PontoNotFoundException("Ponto não encontrado com o ID: " + id);
         }

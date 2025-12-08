@@ -92,6 +92,7 @@ public class CalculoService {
             perimetro += Math.sqrt(dx * dx + dy * dy);
         }
         lev.setArea(Math.abs((det1 - det2) / 2));
+        lev.setPerimetro(perimetro);
 
 
         return lev;
