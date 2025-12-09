@@ -47,7 +47,7 @@ public class LevantamentoResponseDTO {
         responseDTO.setArea(levantamento.getArea());
         responseDTO.setPerimetro(levantamento.getPerimetro());
 
-        if(levantamento.getTipo().equals("Caminhamento") || levantamento.getTipo().equals("Caminhamento Irradiado")){
+        if(levantamento.getTipo().equals("Caminhamento")){
             responseDTO.setErroAngular(levantamento.getErroAngular());
             responseDTO.setErroLinearAbs(levantamento.getErroLinearAbs());
             responseDTO.setErroLinearRelativo(levantamento.getErroLinearAbs() / (levantamento.getPerimetro() / 1000));
